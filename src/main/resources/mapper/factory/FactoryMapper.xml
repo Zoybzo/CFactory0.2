@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.factory.mapper.FactoryMapper">
+
+    <resultMap id="factoryMap" type="cc.mrbird.febs.factory.entity.Factory">
+        <result column="FACTORY_ID" jdbcType="BIGINT" property="factoryId"/>
+        <result column="FACTORY_NAME" jdbcType="VARCHAR" property="factoryName"/>
+        <result column="STATUS" jdbcType="CHAR" property="status"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="CREATE_TIME" jdbcType="TIME" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIME" property="modifyTime"/>
+    </resultMap>
+
+    <sql id="countFactoryDetailSql">
+        SELECT
+        COUNT(1)
+        FROM
+        t_factory f
+        LEFT JOIN t_user_factory uf ON(f.FACTORY_ID = uf.FACTORY_ID)
+        WHERE 1 = 1
+        <if test="factory.userId != null and factory.userId != ''">
+            AND uf.USER_ID = #{factory.userId}
+        </if>
+        <if test="factory.factoryName != null and factory.factoryName != ''">
+            AND f.FACTORY_NAME = #{factory.factoryName}
+        </if>
+        <if test="factory.status != null and factory.status != ''">
+            AND f.STATUS = #{factory.status}
+        </if>
+        <if test="factory.createTimeFrom != null and factory.createTimeFrom !=''">
+            And f.create_time &gt; #{factory.createTimeFrom}
+        </if>
+        <if test="factory.createTimeTo!= null and factory.createTimeTo !=''">
+            And f.create_time &lt; #{factory.createTimeTo}
+        </if>
+    </sql>
+
+    <sql id="findFactoryDetailSql">
+        SELECT
+        f.FACTORY_ID factoryId,
+        f.factory_name factoryName,
+        f.status,
+        f.create_time createTime,
+        f.modify_time modifyTime,
+        f.description,
+        u.username,
+        u.user_id userId
+        FROM t_factory f
+        LEFT JOIN t_user_factory uf ON (f.FACTORY_ID = uf.FACTORY_ID)
+        LEFT JOIN t_user u ON (uf.USER_ID = u.USER_ID)
+        WHERE 1=1
+        <if test="factory.username != null and factory.username != ''">
+            AND u.USERNAME = #{factory.username}
+        </if>
+        <if test="factory.userId != null and factory.userId != ''">
+            AND u.USER_ID = #{factory.userId}
+        </if>
+        <if test="factory.factoryName != null and factory.factoryName != ''">
+            AND f.FACTORY_NAME=#{factory.factoryName}
+        </if>
+        <if test="factory.status != null and factory.status != ''">
+            AND f.STATUS = #{factory.status}
+        </if>
+        <if test="factory.createTimeFrom != null and factory.createTimeFrom !=''">
+            And f.create_time &gt; #{factory.createTimeFrom}
+        </if>
+        <if test="factory.createTimeTo!= null and factory.createTimeTo !=''">
+            And f.create_time &lt; #{factory.createTimeTo}
+        </if>
+    </sql>
+
+    <select id="countFactoryDetail" parameterType="factory" resultType="long">
+        <include refid="countFactoryDetailSql"/>
+    </select>
+
+    <select id="findFactoryDetail" parameterType="factory" resultType="factory">
+        <include refid="findFactoryDetailSql"/>
+    </select>
+
+    <select id="findFactoryDetailPage" parameterType="factory" resultType="factory">
+        <include refid="findFactoryDetailSql"/>
+    </select>
+
+    <select id="findByName" parameterType="string" resultType="factory">
+        SELECT f.FACTORY_ID   factoryId,
+               f.factory_name factoryName,
+               f.status,
+               f.description,
+               f.create_time  createTime,
+               f.modify_time  modifyTime,
+               u.username,
+               u.user_id      userId
+        FROM t_factory f
+                 LEFT JOIN t_user_factory uf ON (f.FACTORY_ID = uf.FACTORY_ID)
+                 LEFT JOIN t_user u ON (uf.USER_ID = u.USER_ID)
+        WHERE f.FACTORY_NAME = #{factory.factoryName}
+    </select>
+
+    <select id="findByUserId" parameterType="string" resultType="factory">
+        SELECT f.FACTORY_ID   factoryId,
+               f.factory_name factoryName,
+               f.status,
+               f.description,
+               f.create_time  createTime,
+               f.modify_time  modifyTime
+        FROM t_factory f
+                 LEFT JOIN t_user_factory uf ON (f.FACTORY_ID = uf.FACTORY_ID)
+        WHERE uf.USER_ID = #{factory.userId}
+    </select>
+</mapper>

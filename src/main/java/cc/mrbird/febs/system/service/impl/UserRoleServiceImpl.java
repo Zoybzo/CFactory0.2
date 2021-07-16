@@ -3,6 +3,7 @@ package cc.mrbird.febs.system.service.impl;
 import cc.mrbird.febs.system.entity.UserRole;
 import cc.mrbird.febs.system.mapper.UserRoleMapper;
 import cc.mrbird.febs.system.service.IUserRoleService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
@@ -49,6 +50,15 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
                 .in(UserRole::getRoleId, roleIds));
         if (CollectionUtils.isNotEmpty(userRoles)) {
             return userRoles.stream().map(UserRole::getUserId).collect(Collectors.toSet());
+        }
+        return null;
+    }
+
+    @Override
+    public Long findRoleIdByUserId(String userId) {
+        List<UserRole> userRoles = baseMapper.selectList(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userId));
+        if (CollectionUtils.isNotEmpty(userRoles)) {
+            return userRoles.get(0).getRoleId();
         }
         return null;
     }

@@ -1,0 +1,77 @@
+<style>
+  #factory-update {
+    padding: 20px 25px 25px 0;
+  }
+</style>
+<div class="layui-fluid" id="factory-update">
+  <form class="layui-form" action="" lay-filter="factory-update-form">
+    <div class="layui-form-item febs-hide">
+      <label class="layui-form-label febs-form-item-require">工厂id：</label>
+      <div class="layui-input-block">
+        <input type="text" name="factoryId" data-th-value="${factory.factoryId}">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label febs-form-item-require">工厂名：</label>
+      <div class="layui-input-block">
+        <input type="text" name="factoryName" minlength="4" maxlength="10" data-th-id="${factory.factoryName}"
+               lay-verify="range|factoryName" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label febs-form-item-require">状态：</label>
+      <div class="layui-input-block">
+        <input type="radio" name="status" value="1" title="正常">
+        <input type="radio" name="status" value="0" title="关停">
+      </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">备注：</label>
+      <div class="layui-input-block">
+                <textarea name="description" maxlength="100" class="layui-textarea">
+                </textarea>
+      </div>
+    </div>
+    <div class="layui-form-item febs-hide">
+      <button class="layui-btn" lay-submit="" lay-filter="factory-update-form-submit" id="submit"></button>
+    </div>
+  </form>
+</div>
+
+<script data-th-inline="javascript">
+  layui.use(['febs', 'form', 'xmSelect', 'validate'], function () {
+    let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            factory = [[${factory}]],
+            validate = layui.validate;
+
+    form.verify(validate);
+    form.render();
+
+    initFactoryValue();
+
+    function initFactoryValue() {
+      form.val("factory-update-form", {
+        "factoryName": factory.factoryName,
+        "status": factory.status,
+        "description": factory.description
+      });
+    }
+
+    form.on('submit(factory-update-form-submit)', function (data) {
+      if (febs.nativeEqual(data.field, factory)) {
+        febs.alert.warn('数据未作任何修改！');
+        return false;
+      }
+      febs.post(ctx + 'factory/update', data.field, function () {
+        layer.closeAll();
+        febs.alert.success(factory.factoryName + ' 工厂数据修改成功');
+        $('#febs-factory').find('#query').click();
+      });
+      return false;
+    });
+  });
+</script>

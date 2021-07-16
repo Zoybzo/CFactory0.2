@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.factory.mapper.EquipmentMapper">
+
+    <resultMap id="equipmentMap" type="cc.mrbird.febs.factory.entity.Equipment">
+        <result column="EQUIPMENT_ID" jdbcType="BIGINT" property="equipmentId"/>
+        <result column="EQUIPMENT_NAME" jdbcType="VARCHAR" property="equipmentName"/>
+        <result column="STATUS" jdbcType="CHAR" property="status"/>
+        <result column="OWNED_FACTORY" jdbcType="BIGINT" property="ownedFactory"/>
+        <result column="USING_FACTORY" jdbcType="BIGINT" property="usingFactory"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="CREATE_TIME" jdbcType="TIME" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIME" property="modifyTime"/>
+    </resultMap>
+
+    <sql id="countEquipmentDetailSql">
+        SELECT
+        COUNT(1)
+        FROM
+        t_equipment e
+        WHERE 1 = 1
+        <if test="equipment.equipmentId != null and equipment.equipmentId != ''">
+            AND e.EQUIPMENT_ID = #{equipment.equipmentId}
+        </if>
+        <if test="equipment.equipmentName != null and equipment.equipmentName != ''">
+            AND e.EQUIPMENT_NAME = #{equipment.equipmentName}
+        </if>
+        <if test="equipment.status != null and equipment.status != ''">
+            AND e.STATUS = #{equipment.status}
+        </if>
+        <if test="equipment.createTimeFrom != null and equipment.createTimeFrom !=''">
+            And e.create_time &gt; #{equipment.createTimeFrom}
+        </if>
+        <if test="equipment.createTimeTo!= null and equipment.createTimeTo !=''">
+            And e.create_time &lt; #{equipment.createTimeTo}
+        </if>
+    </sql>
+
+    <sql id="findEquipmentDetailSql">
+        SELECT e.EQUIPMENT_ID equipmentId,
+        e.EQUIPMENT_NAME equipmentName,
+        e.status,
+        e.OWNED_FACTORY ownedFactory,
+        e.USING_FACTORY usingFactory,
+        e.description,
+        e.CREATE_TIME createTime,
+        e.MODIFY_TIME modifyTime
+        FROM t_equipment e
+        WHERE 1=1
+        <if test="equipment.equipmentId != null and equipment.equipmentId != ''">
+            AND e.EQUIPMENT_ID = #{equipment.equipmentId}
+        </if>
+        <if test="equipment.equipmentName != null and equipment.equipmentName != ''">
+            AND e.EQUIPMENT_NAME = #{equipment.equipmentName}
+        </if>
+        <if test="equipment.status != null and equipment.status != ''">
+            AND e.STATUS = #{equipment.status}
+        </if>
+        <if test="equipment.createTimeFrom != null and equipment.createTimeFrom !=''">
+            And e.create_time &gt; #{equipment.createTimeFrom}
+        </if>
+        <if test="equipment.createTimeTo!= null and equipment.createTimeTo !=''">
+            And e.create_time &lt; #{equipment.createTimeTo}
+        </if>
+    </sql>
+
+    <select id="countEquipmentDetail" parameterType="equipment" resultType="long">
+        <include refid="countEquipmentDetailSql"/>
+    </select>
+
+    <select id="findEquipmentDetail" parameterType="equipment" resultType="equipment">
+        <include refid="findEquipmentDetailSql"/>
+    </select>
+
+    <select id="findEquipmentDetailPage" parameterType="equipment" resultType="equipment">
+        <include refid="findEquipmentDetailSql"/>
+    </select>
+
+</mapper>

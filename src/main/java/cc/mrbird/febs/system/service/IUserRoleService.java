@@ -40,4 +40,12 @@ public interface IUserRoleService extends IService<UserRole> {
      * @return 用户ID集合
      */
     Set<Long> findUserIdByRoleIds(List<String> roleIds);
+
+    /**
+     * 查找用户角色Id
+     *
+     * @param userId 用户ID
+     * @return 角色ID
+     */
+    Long findRoleIdByUserId(String userId);
 }

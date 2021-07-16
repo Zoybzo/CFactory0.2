@@ -50,6 +50,7 @@ public class LoginController extends BaseController {
         super.login(token);
         // 保存登录日志
         loginLogService.saveLoginLog(username);
+        request.getSession().setAttribute("user", userService.findByName(username));
         return new FebsResponse().success().data(properties.getShiro().getSuccessUrl());
     }
 
