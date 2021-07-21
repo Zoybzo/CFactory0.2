@@ -1,0 +1,96 @@
+<style>
+    #order-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="order-update">
+    <form class="layui-form" action="" lay-filter="order-update-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">订单id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="orderId" data-th-value="${order.orderId}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">所需产品：</label>
+            <div class="layui-input-block">
+                <select name="productId" id="productIdInOrderUpdate-menu" lay-verify="required">
+                    <option value="-1">--全部--</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">所需数量：</label>
+            <div class="layui-input-block">
+                <input type="text" name="quantity" minlength="2" maxlength="10"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">订单状态：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="5" title="已完成">
+                <input type="radio" name="status" value="4" title="已签收">
+                <input type="radio" name="status" value="3" title="已发货">
+                <input type="radio" name="status" value="2" title="已选标">
+                <input type="radio" name="status" value="1" title="选标中">
+                <input type="radio" name="status" value="0" title="编辑中">
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="order-update-form-submit" id="submit"></button>
+        </div>
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'xmSelect', 'validate'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            order = [[${order}]],
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render();
+
+        initOrderValue();
+
+        function initOrderValue() {
+            form.val("order-update-form", {
+                "productName": order.productName,
+                "quantity": order.quantity,
+                "status": order.status
+            });
+        }
+
+        $.ajax({
+            url: ctx + 'product/getAllProduct',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data, function (index, item) {
+                    $('#productIdInOrderUpdate-menu').append(new Option(item.productName, item.productId));//往下拉菜单里添加元素
+                })
+                $('#productIdInOrderUpdate-menu').val(order.productId);
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+
+        form.on('submit(order-update-form-submit)', function (data) {
+            if (febs.nativeEqual(data.field, order)) {
+                febs.alert.warn('数据未作任何修改！');
+                return false;
+            }
+            febs.post(ctx + 'order/update', data.field, function () {
+                layer.closeAll();
+                febs.alert.success(' 订单数据修改成功');
+                $('#febs-order').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

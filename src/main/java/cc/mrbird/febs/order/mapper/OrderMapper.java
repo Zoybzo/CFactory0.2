@@ -32,4 +32,20 @@ public interface OrderMapper extends BaseMapper<Order> {
      */
     <T> IPage<Order> findOrderDetailPage(Page<T> page, @Param("order") Order order);
 
+    /**
+     * 检查满足条件的 order 的数量
+     *
+     * @param order order
+     * @return 数量
+     */
+    long countOrderDetailWithStatus(@Param("order") Order order);
+
+
+    <T> IPage<Order> findOtherOrderDetailPage(Page<T> page, @Param("order") Order order);
+
+    long countOtherOrderDetail(@Param("order") Order order);
+
+    long countMyOrderDetail(@Param("order") Order order);
+
+    <T> IPage<Order> findMyOrderDetailPage(Page<T> page, @Param("order") Order order);
 }

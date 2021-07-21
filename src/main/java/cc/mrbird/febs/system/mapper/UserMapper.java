@@ -36,7 +36,7 @@ public interface UserMapper extends BaseMapper<User> {
      * 查找用户详细信息
      *
      * @param user 用户对象，用于传递查询条件
-     * @return List<User>
+     * @return List
      */
     List<User> findUserDetail(@Param("user") User user);
 

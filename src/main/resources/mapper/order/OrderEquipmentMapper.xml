@@ -1,5 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.order.mapper.OrderEquipmentMapper">
+    <resultMap id="orderEquipmentMap" type="cc.mrbird.febs.order.entity.OrderEquipment">
+        <result column="ORDER_EQUIPMENT_ID" jdbcType="BIGINT" property="orderEquipmentId"/>
+        <result column="ORDER_ID" jdbcType="BIGINT" property="orderId"/>
+        <result column="EQUIPMENT_ID1" jdbcType="BIGINT" property="equipmentId1"/>
+        <result column="EQUIPMENT_ID2" jdbcType="BIGINT" property="equipmentId2"/>
+        <result column="EQUIPMENT_ID3" jdbcType="BIGINT" property="equipmentId3"/>
+    </resultMap>
+
+    <sql id="findByOrderIdSql">
+        SELECT
+        oe.ORDER_ID orderId,
+        oe.ORDER_EQUIPMENT_ID orderEquipmentId,
+        e1.EQUIPMENT_ID equipmentId1,
+        e1.EQUIPMENT_NAME equipmentName1,
+        e2.EQUIPMENT_ID equipmentId2,
+        e2.EQUIPMENT_NAME equipmentName2,
+        e3.EQUIPMENT_ID equipmentId3,
+        e3.EQUIPMENT_NAME equipmentName3
+        FROM t_order_equipment oe
+        LEFT JOIN t_equipment e1 ON (oe.EQUIPMENT_ID1 = e1.EQUIPMENT_ID)
+        LEFT JOIN t_equipment e2 ON (oe.EQUIPMENT_ID2 = e2.EQUIPMENT_ID)
+        LEFT JOIN t_equipment e3 ON (oe.EQUIPMENT_ID3 = e3.EQUIPMENT_ID)
+        WHERE 1=1
+        <if test="orderEquipment.orderEquipmentId != null and orderEquipment.orderEquipmentId != ''">
+            AND oe.ORDER_EQUIPMENT_ID = #{orderEquipment.orderEquipmentId}
+        </if>
+        <if test="orderEquipment.orderId != null and orderEquipment.orderId != ''">
+            AND oe.ORDER_ID = #{orderEquipment.orderId}
+        </if>
+        <if test="orderEquipment.equipmentId1 != null and orderEquipment.equipmentId1 != ''">
+            AND e1.EQUIPMENT_ID = #{orderEquipment.equipmentId1}
+        </if>
+        <if test="orderEquipment.equipmentId2 != null and orderEquipment.equipmentId2 != ''">
+            AND e2.EQUIPMENT_ID = #{orderEquipment.equipmentId2}
+        </if>
+        <if test="orderEquipment.equipmentId3 != null and orderEquipment.equipmentId3 != ''">
+            AND e3.EQUIPMENT_ID = #{orderEquipment.equipmentId3}
+        </if>
+    </sql>
+
+    <sql id="findOrderEquipmentsWithEquipmentIdsSql">
+        SELECT
+        oe.ORDER_ID orderId,
+        oe.ORDER_EQUIPMENT_ID orderEquipmentId,
+        e1.EQUIPMENT_ID equipmentId1,
+        e1.EQUIPMENT_NAME equipmentName1,
+        e2.EQUIPMENT_ID equipmentId2,
+        e2.EQUIPMENT_NAME equipmentName2,
+        e3.EQUIPMENT_ID equipmentId3,
+        e3.EQUIPMENT_NAME equipmentName3
+        FROM t_order_equipment oe
+        LEFT JOIN t_equipment e1 ON (oe.EQUIPMENT_ID1 = e1.EQUIPMENT_ID)
+        LEFT JOIN t_equipment e2 ON (oe.EQUIPMENT_ID2 = e2.EQUIPMENT_ID)
+        LEFT JOIN t_equipment e3 ON (oe.EQUIPMENT_ID3 = e3.EQUIPMENT_ID)
+        WHERE 1=1
+        <if test="orderEquipment.equipmentId1 != null and orderEquipment.equipmentId1 != ''">
+            OR e1.EQUIPMENT_ID = #{orderEquipment.equipmentId1}
+        </if>
+        <if test="orderEquipment.equipmentId2 != null and orderEquipment.equipmentId2 != ''">
+            OR e2.EQUIPMENT_ID = #{orderEquipment.equipmentId2}
+        </if>
+        <if test="orderEquipment.equipmentId3 != null and orderEquipment.equipmentId3 != ''">
+            OR e3.EQUIPMENT_ID = #{orderEquipment.equipmentId3}
+        </if>
+    </sql>
+
+    <sql id="findOrderEquipmentsSql">
+        SELECT
+        oe.ORDER_ID orderId,
+        oe.ORDER_EQUIPMENT_ID orderEquipmentId,
+        e1.EQUIPMENT_ID equipmentId1,
+        e1.EQUIPMENT_NAME equipmentName1,
+        e2.EQUIPMENT_ID equipmentId2,
+        e2.EQUIPMENT_NAME equipmentName2,
+        e3.EQUIPMENT_ID equipmentId3,
+        e3.EQUIPMENT_NAME equipmentName3,
+        o.SELECTED_FACTORY_ID selectedFactroyId,
+        uf.USER_ID userId
+        FROM t_order_equipment oe
+        LEFT JOIN t_equipment e1 ON (oe.EQUIPMENT_ID1 = e1.EQUIPMENT_ID)
+        LEFT JOIN t_equipment e2 ON (oe.EQUIPMENT_ID2 = e2.EQUIPMENT_ID)
+        LEFT JOIN t_equipment e3 ON (oe.EQUIPMENT_ID3 = e3.EQUIPMENT_ID)
+        LEFT JOIN t_order o ON (o.ORDER_ID = oe.ORDER_ID)
+        LEFT JOIN t_factory f ON (f.FACTORY_ID = o.SELECTED_FACTORY_ID)
+        LEFT JOIN t_user_factory uf ON (uf.FACTORY_ID = o.SELECTED_FACTORY_ID)
+        WHERE 1=1
+        <if test="orderEquipment.userId != null and orderEquipment.userId != ''">
+            AND uf.USER_ID = #{orderEquipment.userId}
+        </if>
+        <if test="orderEquipment.selectedFactoryId != null and orderEquipment.selectedFactoryId != ''">
+            AND o.SELECTED_FACTORY_ID = #{orderEquipment.selectedFactoryId}
+        </if>
+        <if test="orderEquipment.orderId != null and orderEquipment.orderId != ''">
+            AND o.ORDER_ID = #{orderEquipment.orderId}
+        </if>
+    </sql>
+
+    <select id="findByOrderId" parameterType="orderEquipment" resultType="orderEquipment">
+        <include refid="findByOrderIdSql"/>
+    </select>
+
+    <select id="findOrderEquipmentsWithEquipmentIds" parameterType="orderEquipment" resultType="orderEquipment">
+        <include refid="findOrderEquipmentsWithEquipmentIdsSql"/>
+    </select>
+
+    <select id="findOrderEquipments" parameterType="orderEquipment" resultType="orderEquipment">
+        <include refid="findOrderEquipmentsSql"/>
+    </select>
 
 </mapper>

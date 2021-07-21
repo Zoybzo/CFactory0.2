@@ -1,5 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cc.mrbird.febs.receiver.mapper.BidFactoryMapper">
+<mapper namespace="cc.mrbird.febs.factory.mapper.BidFactoryMapper">
+    <resultMap id="bidFactoryMap" type="cc.mrbird.febs.factory.entity.BidFactory">
+        <result column="BID_FACTORY_ID" jdbcType="BIGINT" property="bidFactoryId"/>
+        <result column="FACTORY_ID" jdbcType="BIGINT" property="factoryId"/>
+        <result column="ORDER_ID" jdbcType="BIGINT" property="orderId"/>
+        <result column="PRICE" jdbcType="BIGINT" property="price"/>
+    </resultMap>
+
+    <sql id="countBidFactoryDetailSql">
+        SELECT COUNT(1)
+        FROM t_bid_factory bf
+        WHERE 1=1
+        <if test="bidFactory.bidFactoryId != null and bidFactory.bidFactoryId != '' ">
+            AND bf.BID_FACTORY_ID = #{bidFactory.bidFactoryId}
+        </if>
+        <if test="bidFactory.factoryId != null and bidFactory.factoryId != ''">
+            AND bf.FACTORY_ID = #{bidFactory.factoryId}
+        </if>
+        <if test="bidFactory.orderId != null and bidFactory.orderId != ''">
+            AND bf.ORDER_ID = #{bidFactory.orderId}
+        </if>
+        <if test="bidFactory.price != null and bidFactory.price != ''">
+            AND bf.PRICE = #{bidFactory.price}
+        </if>
+    </sql>
+
+    <sql id="findBidFactoryDetailSql">
+        SELECT
+        bf.BID_FACTORY_ID bidFactoryId,
+        bf.PRICE price,
+        bf.FACTORY_ID factoryId,
+        bf.ORDER_ID orderId,
+        f.FACTORY_NAME factoryName,
+        o.USER_ID userId
+        FROM t_bid_factory bf
+        LEFT JOIN t_factory f on bf.FACTORY_ID = f.FACTORY_ID
+        LEFT JOIN t_order o on bf.ORDER_ID = o.ORDER_ID
+        WHERE 1=1
+        <if test="bidFactory.bidFactoryId != null and bidFactory.bidFactoryId != '' ">
+            AND bf.BID_FACTORY_ID = #{bidFactory.bidFactoryId}
+        </if>
+        <if test="bidFactory.factoryId != null and bidFactory.factoryId != ''">
+            AND bf.FACTORY_ID = #{bidFactory.factoryId}
+        </if>
+        <if test="bidFactory.orderId != null and bidFactory.orderId != ''">
+            AND bf.ORDER_ID = #{bidFactory.orderId}
+        </if>
+        <if test="bidFactory.price != null and bidFactory.price != ''">
+            AND bf.PRICE = #{bidFactory.price}
+        </if>
+    </sql>
+
+    <select id="countBidFactoryDetail" parameterType="bidFactory" resultType="long">
+        <include refid="countBidFactoryDetailSql"/>
+    </select>
+
+    <select id="findBidFactoryDetail" parameterType="bidFactory" resultType="bidFactory">
+        <include refid="findBidFactoryDetailSql"/>
+    </select>
+
+    <select id="findBidFactoryDetailPage" parameterType="bidFactory" resultType="bidFactory">
+        <include refid="findBidFactoryDetailSql"/>
+    </select>
 
 </mapper>

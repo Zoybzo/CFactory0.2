@@ -19,8 +19,8 @@ public interface IOrderService extends IService<Order> {
      * 查询（分页）
      *
      * @param request QueryRequest
-     * @param order order
-     * @return IPage<Order>
+     * @param order   order
+     * @return IPage
      */
     IPage<Order> findOrders(QueryRequest request, Order order);
 
@@ -28,7 +28,7 @@ public interface IOrderService extends IService<Order> {
      * 查询（所有）
      *
      * @param order order
-     * @return List<Order>
+     * @return List
      */
     List<Order> findOrders(Order order);
 
@@ -52,4 +52,18 @@ public interface IOrderService extends IService<Order> {
      * @param order order
      */
     void deleteOrder(Order order);
+
+    /**
+     * @param factoryIds factoryIds
+     * @return doesFactoryHasOrder
+     */
+    boolean doesFactoryHasOrder(String[] factoryIds);
+
+    Order findById(String orderId);
+
+    boolean checkOrderStatus(String[] orderIds);
+
+    IPage<Order> findOtherOrders(QueryRequest request, Order order);
+
+    IPage<Order> findMyOrders(QueryRequest request, Order order);
 }

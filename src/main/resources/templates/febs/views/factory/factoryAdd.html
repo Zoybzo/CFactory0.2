@@ -1,0 +1,60 @@
+<style>
+    #factory-add {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="factory-add">
+    <form class="layui-form" action="" lay-filter="factory-add-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">工厂名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="factoryName" minlength="2" maxlength="10" lay-verify="range|factoryName"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">工厂状态：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="1" title="正常" checked="">
+                <input type="radio" name="status" value="0" title="关停">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">工厂简介：</label>
+            <div class="layui-input-block">
+                <textarea name="description" maxlength="100" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="factory-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            validate = layui.validate,
+            dataPermissionXmlSelect,
+            roleXmSelect,
+            deptXmlSelect;
+
+        form.verify(validate);
+        form.render();
+
+        form.on('submit(factory-add-form-submit)', function (data) {
+            febs.post(ctx + 'factory/factoryAdd', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增工厂成功');
+                $('#febs-factory').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

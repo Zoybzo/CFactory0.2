@@ -4,6 +4,7 @@ import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.order.entity.OrderEquipment;
 import cc.mrbird.febs.order.mapper.OrderEquipmentMapper;
 import cc.mrbird.febs.order.service.IOrderEquipmentService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,10 +18,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
 
 /**
- * 排产表 Service实现
+ * Service实现
  *
  * @author zoybzo
- * @date 2021-07-15 18:57:38
+ * @date 2021-07-20 20:37:05
  */
 @Service
 @RequiredArgsConstructor
@@ -39,9 +40,7 @@ public class OrderEquipmentServiceImpl extends ServiceImpl<OrderEquipmentMapper,
 
     @Override
     public List<OrderEquipment> findOrderEquipments(OrderEquipment orderEquipment) {
-	    LambdaQueryWrapper<OrderEquipment> queryWrapper = new LambdaQueryWrapper<>();
-		// TODO 设置查询条件
-		return this.baseMapper.selectList(queryWrapper);
+        return this.baseMapper.findOrderEquipments(orderEquipment);
     }
 
     @Override
@@ -60,7 +59,19 @@ public class OrderEquipmentServiceImpl extends ServiceImpl<OrderEquipmentMapper,
     @Transactional(rollbackFor = Exception.class)
     public void deleteOrderEquipment(OrderEquipment orderEquipment) {
         LambdaQueryWrapper<OrderEquipment> wrapper = new LambdaQueryWrapper<>();
-	    // TODO 设置删除条件
-	    this.remove(wrapper);
-	}
+        // TODO 设置删除条件
+        this.remove(wrapper);
+    }
+
+    @Override
+    public OrderEquipment findByOrderId(String orderId) {
+        OrderEquipment orderEquipment = new OrderEquipment();
+        orderEquipment.setOrderId(Long.parseLong(orderId));
+        return this.baseMapper.findByOrderId(orderEquipment);
+    }
+
+    @Override
+    public List<OrderEquipment> findOrderEquipmentsWithEquipmentIds(OrderEquipment orderEquipment) {
+        return this.baseMapper.findOrderEquipmentsWithEquipmentIds(orderEquipment);
+    }
 }

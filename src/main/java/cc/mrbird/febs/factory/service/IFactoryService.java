@@ -36,7 +36,7 @@ public interface IFactoryService extends IService<Factory> {
      *
      * @param request QueryRequest
      * @param factory factory
-     * @return IPage<Factory>
+     * @return IPage
      */
     IPage<Factory> findFactories(QueryRequest request, Factory factory);
 
@@ -44,7 +44,7 @@ public interface IFactoryService extends IService<Factory> {
      * 查询（所有）
      *
      * @param factory factory
-     * @return List<Factory>
+     * @return List
      */
     List<Factory> findFactories(Factory factory);
 

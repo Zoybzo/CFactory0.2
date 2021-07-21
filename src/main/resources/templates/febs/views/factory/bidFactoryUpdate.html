@@ -1,0 +1,51 @@
+<style>
+    #bidFactory-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="bidFactory-update">
+    <form class="layui-form" action="" lay-filter="bidFactoryUpdateSubmit">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">竞标id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="bidFactoryId" data-th-value="${bidFactory.bidFactoryId}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">价格：</label>
+            <div class="layui-input-block">
+                <input type="text" name="price" minlength="2" maxlength="10" lay-verify="required|number" data-th-value="${bidFactory.price}"
+                       autocomplete="off" class="layui-input" lay-type="number">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="bidFactoryUpdateSubmit" id="submit"></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render()
+
+        form.on('submit(bidFactoryUpdateSubmit)', function (data) {
+            febs.post(ctx + 'bidFactory/update', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('修改完成');
+                $('#febs-bidFactory').find('#query').click()
+            });
+            return false;
+        });
+    });
+</script>

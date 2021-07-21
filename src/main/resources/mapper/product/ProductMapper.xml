@@ -2,4 +2,79 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.product.mapper.ProductMapper">
 
+    <resultMap id="productMap" type="cc.mrbird.febs.product.entity.Product">
+        <result column="PRODUCT_ID" jdbcType="BIGINT" property="productId"/>
+        <result column="PRODUCT_NAME" jdbcType="VARCHAR" property="productName"/>
+        <result column="PRODUCT_TYPE_ID" jdbcType="BIGINT" property="productTypeId"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="CREATE_TIME" jdbcType="TIME" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIME" property="modifyTime"/>
+    </resultMap>
+
+    <sql id="findProductDetailSql">
+        SELECT p.PRODUCT_TYPE_ID productId,
+        pt.PRODUCT_TYPE_NAME productTypeName,
+        p.PRODUCT_NAME productName,
+        p.DESCRIPTION,
+        p.CREATE_TIME createTime
+        FROM t_product p
+        LEFT JOIN t_product_type pt on p.PRODUCT_TYPE_ID= pt.PRODUCT_TYPE_ID
+        WHERE 1 = 1
+        <if test="product.productId != null and product.productId != ''">
+            AND p.PRODUCT_ID = #{product.productId}
+        </if>
+        <if test="product.productName != null and product.productName != ''">
+            AND p.PRODUCT_NAME = #{product.productName}
+        </if>
+        <if test="product.description != null and product.description != ''">
+            AND p.DESCRIPTION = #{product.description}
+        </if>
+        <if test="product.productTypeId != null and product.productTypeId != ''">
+            AND pt.PRODUCT_TYPE_ID = #{product.productTypeId}
+        </if>
+        <if test="product.createTimeFrom != null and product.createTimeFrom !=''">
+            And p.create_time &gt; #{product.createTimeFrom}
+        </if>
+        <if test="product.createTimeTo!= null and product.createTimeTo !=''">
+            And p.create_time &lt; #{product.createTimeTo}
+        </if>
+    </sql>
+
+    <sql id="countProductDetailSql">
+        SELECT COUNT(1)
+        FROM t_product p
+        LEFT JOIN t_product_type pt on p.PRODUCT_TYPE_ID = pt.PRODUCT_TYPE_ID
+        WHERE 1 = 1
+        <if test="product.productId != null and product.productId != ''">
+            AND p.PRODUCT_ID = #{product.productId}
+        </if>
+        <if test="product.productName != null and product.productName != ''">
+            AND p.PRODUCT_NAME = #{product.productName}
+        </if>
+        <if test="product.productTypeId != null and product.productTypeId != ''">
+            AND pt.PRODUCT_TYPE_ID = #{product.productTypeId}
+        </if>
+        <if test="product.description != null and product.description != ''">
+            AND p.DESCRIPTION = #{product.description}
+        </if>
+        <if test="product.createTimeFrom != null and product.createTimeFrom !=''">
+            And p.create_time &gt; #{product.createTimeFrom}
+        </if>
+        <if test="product.createTimeTo!= null and product.createTimeTo !=''">
+            And p.create_time &lt; #{product.createTimeTo}
+        </if>
+    </sql>
+
+    <select id="countProductDetail" parameterType="product" resultType="long">
+        <include refid="countProductDetailSql"/>
+    </select>
+
+    <select id="findProductDetail" parameterType="product" resultType="product">
+        <include refid="findProductDetailSql"/>
+    </select>
+
+    <select id="findProductDetailPage" parameterType="product" resultType="product">
+        <include refid="findProductDetailSql"/>
+    </select>
+
 </mapper>

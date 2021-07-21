@@ -1,0 +1,70 @@
+<meta charset="UTF-8"/>
+<style>
+    #productType-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="productType-update">
+    <form class="layui-form" action="" lay-filter="productType-update-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">类型id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="productTypeId" data-th-value="${productType.productTypeId}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">类型名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="productTypeName" minlength="4" maxlength="10"
+                       lay-verify="range|productTypeName" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">简介：</label>
+            <div class="layui-input-block">
+                <textarea name="description" maxlength="100" class="layui-textarea">
+                </textarea>
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="productType-update-form-submit" id="submit"></button>
+        </div>
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'xmSelect', 'validate'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            productType = [[${productType}]],
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render();
+
+        initProductTypeValue();
+
+        function initProductTypeValue() {
+            form.val("productType-update-form", {
+                "productTypeName": productType.productTypeName,
+                "description": productType.description
+            });
+        }
+
+        form.on('submit(productType-update-form-submit)', function (data) {
+            if (febs.nativeEqual(data.field, productType)) {
+                febs.alert.warn('数据未作任何修改！');
+                return false;
+            }
+            febs.post(ctx + 'productType/update', data.field, function () {
+                layer.closeAll();
+                febs.alert.success(productType.productTypeName + ' 产品类型数据修改成功');
+                $('#febs-productType').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

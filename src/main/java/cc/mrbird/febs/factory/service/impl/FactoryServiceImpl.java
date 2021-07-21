@@ -49,7 +49,6 @@ public class FactoryServiceImpl extends ServiceImpl<FactoryMapper, Factory> impl
         return this.baseMapper.findByName(factoryName);
     }
 
-    // TODO: params
     @Override
     public IPage<Factory> findFactories(QueryRequest request, Factory factory) {
         if (StringUtils.isNotBlank(factory.getCreateTimeFrom()) &&
@@ -65,9 +64,12 @@ public class FactoryServiceImpl extends ServiceImpl<FactoryMapper, Factory> impl
 
     @Override
     public List<Factory> findFactories(Factory factory) {
-        LambdaQueryWrapper<Factory> queryWrapper = new LambdaQueryWrapper<>();
-        // TODO 设置查询条件
-        return this.baseMapper.selectList(queryWrapper);
+        if (StringUtils.isNotBlank(factory.getCreateTimeFrom()) &&
+                StringUtils.equals(factory.getCreateTimeFrom(), factory.getCreateTimeTo())) {
+            factory.setCreateTimeFrom(factory.getCreateTimeFrom() + FebsConstant.DAY_START_PATTERN_SUFFIX);
+            factory.setCreateTimeTo(factory.getCreateTimeTo() + FebsConstant.DAY_END_PATTERN_SUFFIX);
+        }
+        return baseMapper.findFactoryDetail(factory);
     }
 
     @Override
@@ -87,8 +89,8 @@ public class FactoryServiceImpl extends ServiceImpl<FactoryMapper, Factory> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteFactory(Factory factory) {
-        LambdaQueryWrapper<Factory> wrapper = new LambdaQueryWrapper<>();
-        // TODO 设置删除条件
-        this.remove(wrapper);
+//        LambdaQueryWrapper<Factory> wrapper = new LambdaQueryWrapper<>();
+//        wrapper.eq(Factory::getFactoryId, factory.getFactoryId());
+        removeById(factory.getFactoryId());
     }
 }

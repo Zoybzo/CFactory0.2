@@ -6,8 +6,13 @@ import cc.mrbird.febs.common.entity.FebsConstant;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.entity.FebsResponse;
 import cc.mrbird.febs.common.entity.QueryRequest;
+import cc.mrbird.febs.factory.entity.Equipment;
+import cc.mrbird.febs.factory.service.IEquipmentService;
 import cc.mrbird.febs.order.entity.Order;
+import cc.mrbird.febs.order.entity.OrderEquipment;
+import cc.mrbird.febs.order.service.IOrderEquipmentService;
 import cc.mrbird.febs.order.service.IOrderService;
+import cc.mrbird.febs.system.entity.User;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +25,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +48,8 @@ public class OrderController extends BaseController {
 
     private final IOrderService orderService;
     private final IUserRoleService userRoleService;
+    private final IOrderEquipmentService orderEquipmentService;
+    private final IEquipmentService equipmentService;
 
     @GetMapping(FebsConstant.VIEW_PREFIX + "order")
     public String orderIndex() {
@@ -57,8 +66,28 @@ public class OrderController extends BaseController {
     @GetMapping("order/list")
     @ResponseBody
     @RequiresPermissions("order:view")
-    public FebsResponse orderList(QueryRequest request, Order order) {
+    public FebsResponse orderList(QueryRequest request, Order order, HttpServletRequest httpServletRequest) {
+        order.setUserId(((User) (httpServletRequest.getSession().getAttribute("user"))).getUserId());
         Map<String, Object> dataTable = getDataTable(this.orderService.findOrders(request, order));
+        return new FebsResponse().success().data(dataTable);
+    }
+
+    @GetMapping("order/otherOrderList")
+    @ResponseBody
+    @RequiresPermissions("order:view")
+    public FebsResponse otherOrderList(QueryRequest request, Order order, HttpServletRequest httpServletRequest) {
+        order.setUserId(((User) (httpServletRequest.getSession().getAttribute("user"))).getUserId());
+        Map<String, Object> dataTable = getDataTable(this.orderService.findOtherOrders(request, order));
+        return new FebsResponse().success().data(dataTable);
+    }
+
+    @GetMapping("order/myList")
+    @ResponseBody
+    @RequiresPermissions("order:view")
+    public FebsResponse myOrderList(QueryRequest request, Order order, HttpServletRequest httpServletRequest) {
+        order.setSelectedUserId(((User) (httpServletRequest.getSession().getAttribute("user"))).getUserId());
+        order.setStatus("2");
+        Map<String, Object> dataTable = getDataTable(this.orderService.findMyOrders(request, order));
         return new FebsResponse().success().data(dataTable);
     }
 
@@ -68,13 +97,24 @@ public class OrderController extends BaseController {
     public FebsResponse orderList(@PathVariable String winUserId, QueryRequest request, Order order) {
         Long role = userRoleService.findRoleIdByUserId(winUserId);
         if (role != 1L) {
-            order.setWinUserId(winUserId);
-        } else order.setWinUserId(null);
+            order.setSelectedUserId(Long.parseLong(winUserId));
+        } else order.setSelectedUserId(null);
 
         Map<String, Object> dataTable = getDataTable(this.orderService.findOrders(request, order));
         return new FebsResponse().success().data(dataTable);
     }
 
+    @ControllerEndpoint(operation = "新增Order", exceptionMessage = "新增Order失败")
+    @PostMapping("order/orderAdd")
+    @ResponseBody
+    @RequiresPermissions("order:add")
+    public FebsResponse addFactory(@Valid Order order, HttpServletRequest request) {
+        order.setUserId(((User) request.getSession().getAttribute("user")).getUserId());
+        order.setCreateTime(new Date());
+        order.setStatus("0");
+        this.orderService.createOrder(order);
+        return new FebsResponse().success();
+    }
 
     @ControllerEndpoint(operation = "新增Order", exceptionMessage = "新增Order失败")
     @PostMapping("order")
@@ -99,6 +139,66 @@ public class OrderController extends BaseController {
     @ResponseBody
     @RequiresPermissions("order:update")
     public FebsResponse updateOrder(Order order) {
+        Order tmp = orderService.findById(String.valueOf(order.getOrderId()));
+        if (Long.parseLong(order.getStatus()) < Long.parseLong(tmp.getStatus())) {
+            return new FebsResponse().fail();
+        }
+        if (Long.parseLong(tmp.getStatus()) >= 3L && Long.parseLong(tmp.getStatus()) <= Long.parseLong(order.getStatus())) {
+            if (order.getProductId().equals(tmp.getProductId()) && order.getQuantity().equals(tmp.getQuantity())) {
+                order.setModifyTime(new Date());
+                this.orderService.updateOrder(order);
+                return new FebsResponse().success();
+            }
+        }
+
+        if (order.getSelectedFactoryId() == null && Long.parseLong(order.getStatus()) > 1L) {
+            return new FebsResponse().fail();
+        }
+
+        order.setModifyTime(new Date());
+        this.orderService.updateOrder(order);
+        return new FebsResponse().success();
+    }
+
+    @ControllerEndpoint(operation = "修改Order", exceptionMessage = "修改Order失败")
+    @PostMapping("order/send")
+    @ResponseBody
+    @RequiresPermissions("order:update")
+    public FebsResponse sendOrder(Order order) {
+        order = orderService.findById(String.valueOf(order.getOrderId()));
+        OrderEquipment orderEquipment = new OrderEquipment();
+        orderEquipment.setOrderId(order.getOrderId());
+        order.setStatus("3");
+        order.setModifyTime(new Date());
+
+        List<OrderEquipment> orderEquipmentList = orderEquipmentService.findOrderEquipments(orderEquipment);
+        for (OrderEquipment it : orderEquipmentList) {
+            if (it.getEquipmentId1() != null) {
+                Equipment equipment = equipmentService.findById(String.valueOf(it.getEquipmentId1()));
+                if (equipment.getStatus().equals("1")) {
+                    equipment.setStatus("0");
+                    equipmentService.updateEquipment(equipment);
+                    orderEquipmentService.deleteOrderEquipment(orderEquipment);
+                }
+            }
+            if (it.getEquipmentId2() != null) {
+                Equipment equipment = equipmentService.findById(String.valueOf(it.getEquipmentId2()));
+                if (equipment.getStatus().equals("1")) {
+                    equipment.setStatus("0");
+                    equipmentService.updateEquipment(equipment);
+                    orderEquipmentService.deleteOrderEquipment(orderEquipment);
+                }
+            }
+            if (it.getEquipmentId3() != null) {
+                Equipment equipment = equipmentService.findById(String.valueOf(it.getEquipmentId3()));
+                if (equipment.getStatus().equals("1")) {
+                    equipment.setStatus("0");
+                    equipmentService.updateEquipment(equipment);
+                    orderEquipmentService.deleteOrderEquipment(orderEquipment);
+                }
+            }
+        }
+
         this.orderService.updateOrder(order);
         return new FebsResponse().success();
     }

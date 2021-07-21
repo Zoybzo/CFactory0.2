@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 订单表 Entity
@@ -30,6 +31,7 @@ public class Order implements Serializable, Cloneable {
      * 要求最晚发货时间
      */
     @TableField("DELIVERY_DATETIME")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deliveryDatetime;
 
     /**
@@ -75,11 +77,17 @@ public class Order implements Serializable, Cloneable {
     private Long userId;
 
     @TableField(exist = false)
-    private String winUserId;
+    private Long selectedUserId;
     @TableField(exist = false)
     private String createTimeFrom;
     @TableField(exist = false)
     private String createTimeTo;
+    @TableField(exist = false)
+    private String selectedFactoryName;
+    @TableField(exist = false)
+    private String productName;
+    @TableField(exist = false)
+    private String username;
 
     @TableField(exist = false)
     private Set<String> stringPermissions;

@@ -1,0 +1,46 @@
+<style>
+    #order-send {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="order-send">
+    <form class="layui-form" action="" lay-filter="order-send">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">订单id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="orderId" data-th-value="${order.orderId}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            是否确定发货？
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="order-send" id="submit"></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render()
+
+        form.on('submit(order-send)', function (data) {
+            febs.post(ctx + 'order/send', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('发货完成');
+            });
+            return false;
+        });
+    });
+</script>

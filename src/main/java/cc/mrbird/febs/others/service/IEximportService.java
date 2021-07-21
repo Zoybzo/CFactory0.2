@@ -17,7 +17,7 @@ public interface IEximportService extends IService<Eximport> {
      *
      * @param request  QueryRequest
      * @param eximport eximport
-     * @return IPage<Eximport>
+     * @return IPage
      */
     IPage<Eximport> findEximports(QueryRequest request, Eximport eximport);
 
@@ -25,7 +25,7 @@ public interface IEximportService extends IService<Eximport> {
     /**
      * 批量插入
      *
-     * @param list List<Eximport>
+     * @param list List
      */
     void batchInsert(List<Eximport> list);
 

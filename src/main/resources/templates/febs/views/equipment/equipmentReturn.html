@@ -1,0 +1,43 @@
+<style>
+    #equipment-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="equipment-update">
+    <form class="layui-form" action="" lay-filter="equipment-update-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">设备id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="equipmentId" data-th-value="${equipment.equipmentId}">
+            </div>
+        </div>
+        <p>是否归还？</p>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="equipment-update-form-submit" id="submit"></button>
+        </div>
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'xmSelect', 'validate'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            equipment = [[${equipment}]],
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render();
+
+        form.on('submit(equipment-update-form-submit)', function (data) {
+            febs.post(ctx + 'equipment/return', data.field, function () {
+                layer.closeAll();
+                febs.alert.success(equipment.equipmentName + ' 归还成功');
+                $('#febs-equipment').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

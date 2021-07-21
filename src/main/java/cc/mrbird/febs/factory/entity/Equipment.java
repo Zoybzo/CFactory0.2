@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -78,9 +79,24 @@ public class Equipment implements Serializable, Cloneable {
     private String createTimeFrom;
     @TableField(exist = false)
     private String createTimeTo;
-
+    @ExcelField(value = "所属类型名")
     @TableField(exist = false)
-    private Set<String> stringPermissions;
+    private String equipmentTypeName;
+    @ExcelField(value = "所属工厂名")
+    @TableField(exist = false)
+    private String ownedFactoryName;
+    @ExcelField(value = "使用工厂名")
+    @TableField(exist = false)
+    private String usingFactoryName;
+    @ExcelField(value = "使用用户")
+    @TableField(exist = false)
+    private String usingUserId;
+    @ExcelField(value = "所属用户")
+    @TableField(exist = false)
+    private String ownedUserId;
 
-
+    @Override
+    protected Equipment clone() throws CloneNotSupportedException {
+        return (Equipment) super.clone();
+    }
 }

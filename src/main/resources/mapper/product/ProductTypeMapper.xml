@@ -2,4 +2,70 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.product.mapper.ProductTypeMapper">
 
+    <resultMap id="productTypeMap" type="cc.mrbird.febs.product.entity.ProductType">
+        <result column="PRODUCT_ID" jdbcType="BIGINT" property="productTypeId"/>
+        <result column="PRODUCT_NAME" jdbcType="VARCHAR" property="productTypeName"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="CREATE_TIME" jdbcType="TIME" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIME" property="modifyTime"/>
+    </resultMap>
+
+    <sql id="findProductTypeDetailSql">
+        SELECT pt.PRODUCT_TYPE_ID productTypeId,
+        pt.PRODUCT_TYPE_NAME productTypeName,
+        pt.DESCRIPTION,
+        pt.CREATE_TIME createTime
+        FROM t_product_type pt
+        WHERE 1 = 1
+        <if test="productType.productTypeId != null and productType.productTypeId != ''">
+            AND pt.PRODUCT_TYPE_ID = #{productType.productTypeId}
+        </if>
+        <if test="productType.productTypeName != null and productType.productTypeName != ''">
+            AND pt.PRODUCT_TYPE_NAME = #{productType.productTypeName}
+        </if>
+        <if test="productType.description != null and productType.description != ''">
+            AND pt.DESCRIPTION = #{productType.description}
+        </if>
+        <if test="productType.createTimeFrom != null and productType.createTimeFrom !=''">
+            And pt.create_time &gt; #{productType.createTimeFrom}
+        </if>
+        <if test="productType.createTimeTo!= null and productType.createTimeTo !=''">
+            And pt.create_time &lt; #{productType.createTimeTo}
+        </if>
+    </sql>
+
+    <sql id="countProductTypeDetailSql">
+        SELECT COUNT(1)
+        FROM t_product_type pt
+        WHERE 1 = 1
+        <if test="productType.productTypeId != null and productType.productTypeId != ''">
+            AND pt.PRODUCT_TYPE_ID = #{productType.productTypeId}
+        </if>
+        <if test="productType.productTypeName != null and productType.productTypeName != ''">
+            AND pt.PRODUCT_TYPE_NAME = #{productType.productTypeName}
+        </if>
+        <if test="productType.description != null and productType.description != ''">
+            AND pt.DESCRIPTION = #{productType.description}
+        </if>
+        <if test="productType.createTimeFrom != null and productType.createTimeFrom !=''">
+            And pt.create_time &gt; #{productType.createTimeFrom}
+        </if>
+        <if test="productType.createTimeTo!= null and productType.createTimeTo !=''">
+            And pt.create_time &lt; #{productType.createTimeTo}
+        </if>
+    </sql>
+
+    <select id="countProductTypeDetail" parameterType="productType" resultType="long">
+        <include refid="countProductTypeDetailSql"/>
+    </select>
+
+    <select id="findProductTypeDetail" parameterType="productType" resultType="productType">
+        <include refid="findProductTypeDetailSql"/>
+    </select>
+
+    <select id="findProductTypeDetailPage" parameterType="productType" resultType="productType">
+        <include refid="findProductTypeDetailSql"/>
+    </select>
+
+
 </mapper>

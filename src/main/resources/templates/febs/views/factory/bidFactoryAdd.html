@@ -1,0 +1,68 @@
+<style>
+    #order-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="order-update">
+    <form class="layui-form" action="" lay-filter="order-update">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">订单id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="orderId" data-th-value="${bidFactory.orderId}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">我的工厂：</label>
+            <div class="layui-input-block">
+                <select name="factoryId" id="myFactoryInBidFactory-menu" lay-verify="required">
+                    <option value="">--全部--</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">价格：</label>
+            <div class="layui-input-block">
+                <input type="text" name="price" minlength="2" maxlength="10" lay-verify="required|number"
+                       autocomplete="off" class="layui-input" lay-type="number">
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="order-update" id="submit">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            validate = layui.validate;
+
+        form.verify(validate);
+
+        $.ajax({
+            url: ctx + 'factory/getAllMyFactory',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data, function (index, item) {
+                    $('#myFactoryInBidFactory-menu').append(new Option(item.factoryName, item.factoryId));//往下拉菜单里添加元素
+                })
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        form.on('submit(order-update)', function (data) {
+            febs.post(ctx + 'bidFactory/add', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('参与竞标成功');
+            });
+            return false;
+        });
+    });
+</script>

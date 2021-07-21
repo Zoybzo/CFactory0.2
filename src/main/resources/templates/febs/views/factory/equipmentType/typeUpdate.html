@@ -1,0 +1,70 @@
+<style>
+    #equipmentType-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="equipmentType-update">
+    <form class="layui-form" action="" lay-filter="equipmentType-update-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">类型id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="equipmentTypeId" data-th-value="${equipmentType.equipmentTypeId}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">类型名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="equipmentTypeName" minlength="4" maxlength="10"
+                       data-th-id="${equipmentType.equipmentTypeName}"
+                       lay-verify="range|equipmentTypeName" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">描述：</label>
+            <div class="layui-input-block">
+                <textarea name="description" maxlength="100" class="layui-textarea">
+                </textarea>
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="equipmentType-update-form-submit" id="submit"></button>
+        </div>
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'xmSelect', 'validate'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            equipmentType = [[${equipmentType}]],
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render();
+
+        initEquipmentTypeValue();
+
+        function initEquipmentTypeValue() {
+            form.val("equipmentType-update-form", {
+                "equipmentTypeName": equipmentType.equipmentTypeName,
+                "description": equipmentType.description
+            });
+        }
+
+        form.on('submit(equipmentType-update-form-submit)', function (data) {
+            if (febs.nativeEqual(data.field, equipmentType)) {
+                febs.alert.warn('数据未作任何修改！');
+                return false;
+            }
+            febs.post(ctx + 'equipmentType/update', data.field, function () {
+                layer.closeAll();
+                febs.alert.success(equipmentType.equipmentTypeName + ' 类型数据修改成功');
+                $('#febs-equipmentType').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

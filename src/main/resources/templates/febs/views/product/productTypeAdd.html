@@ -1,0 +1,52 @@
+<style>
+    #productType-add {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="productType-add">
+    <form class="layui-form" action="" lay-filter="productType-add-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">类型名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="productTypeName" minlength="2" maxlength="10" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">简介：</label>
+            <div class="layui-input-block">
+                <textarea name="description" maxlength="100" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="productType-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            validate = layui.validate,
+            dataPermissionXmlSelect,
+            roleXmSelect,
+            deptXmlSelect;
+
+        form.verify(validate);
+        form.render();
+
+        form.on('submit(productType-add-form-submit)', function (data) {
+            febs.post(ctx + 'productType/productTypeAdd', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增类型成功');
+                $('#febs-productType').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

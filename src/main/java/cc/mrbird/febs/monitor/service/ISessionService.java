@@ -14,7 +14,7 @@ public interface ISessionService {
      * 获取在线用户列表
      *
      * @param username 用户名
-     * @return List<ActiveUser>
+     * @return List
      */
     List<ActiveUser> list(String username);
 
@@ -29,7 +29,7 @@ public interface ISessionService {
      * 通过用户ID获取Principal集合
      *
      * @param userId 用户ID
-     * @return List<SimplePrincipalCollection>
+     * @return List
      */
     List<SimplePrincipalCollection> getPrincipals(Long userId);
 }

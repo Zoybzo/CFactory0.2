@@ -35,7 +35,7 @@ public interface FactoryMapper extends BaseMapper<Factory> {
 
     /**
      * @param factory 工厂对象，用于传递查询条件
-     * @return List<Factory>
+     * @return List
      */
     List<Factory> findFactoryDetail(@Param("factory") Factory factory);
 

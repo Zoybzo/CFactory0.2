@@ -9,10 +9,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * 排产表 Service接口
+ *  Service接口
  *
  * @author zoybzo
- * @date 2021-07-15 18:57:38
+ * @date 2021-07-20 20:37:05
  */
 public interface IOrderEquipmentService extends IService<OrderEquipment> {
     /**
@@ -20,7 +20,7 @@ public interface IOrderEquipmentService extends IService<OrderEquipment> {
      *
      * @param request QueryRequest
      * @param orderEquipment orderEquipment
-     * @return IPage<OrderEquipment>
+     * @return IPage
      */
     IPage<OrderEquipment> findOrderEquipments(QueryRequest request, OrderEquipment orderEquipment);
 
@@ -28,7 +28,7 @@ public interface IOrderEquipmentService extends IService<OrderEquipment> {
      * 查询（所有）
      *
      * @param orderEquipment orderEquipment
-     * @return List<OrderEquipment>
+     * @return List
      */
     List<OrderEquipment> findOrderEquipments(OrderEquipment orderEquipment);
 
@@ -52,4 +52,8 @@ public interface IOrderEquipmentService extends IService<OrderEquipment> {
      * @param orderEquipment orderEquipment
      */
     void deleteOrderEquipment(OrderEquipment orderEquipment);
+
+    OrderEquipment findByOrderId(String orderId);
+
+    List<OrderEquipment> findOrderEquipmentsWithEquipmentIds(OrderEquipment orderEquipment);
 }

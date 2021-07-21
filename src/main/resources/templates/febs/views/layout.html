@@ -9,7 +9,7 @@
                         <i class="layui-icon layui-icon-shrink-right"></i>
                     </a>
                 </li>
-                 <span class="febs-breadcrumb"></span>
+                <span class="febs-breadcrumb"></span>
             </ul>
             <ul class="layui-nav layui-layout-right" lay-filter="febs-header">
                 <li class="layui-nav-item layui-hide-xs" id="fullscreen" lay-unselect>
@@ -26,7 +26,8 @@
                     <dl class="layui-nav-child">
                         <dd><a class="layui-nav-child-href" id="user-profile">个人中心</a></dd>
                         <dd><a class="layui-nav-child-href" id="password-update">密码修改</a></dd>
-                        <dd><a class="layui-nav-child-href" target="_blank" href="https://github.com/wuyouzhuguli/FEBS-Shiro">项目地址</a></dd>
+                        <dd><a class="layui-nav-child-href" target="_blank"
+                               href="https://github.com/wuyouzhuguli/FEBS-Shiro">项目地址</a></dd>
                         <hr/>
                         <dd><a class="layui-nav-child-href" data-th-href="@{logout}">退出登录</a></dd>
                     </dl>
@@ -51,7 +52,8 @@
                 <ul class="febs-tabs-menu">
                     {{# layui.each(layui.view.tab.data,function(i, item){ }}
                     <li data-type="page" class="febs-tabs-btn" lay-url="{{item.fileurl}}">
-                        <i class="febs-tabs-ball"></i>{{ item.title }}<b class="layui-icon layui-icon-close febs-tabs-close"></b>
+                        <i class="febs-tabs-ball"></i>{{ item.title }}<b
+                            class="layui-icon layui-icon-close febs-tabs-close"></b>
                     </li>
                     {{# }) }}
                 </ul>
@@ -64,8 +66,8 @@
     <div class="layui-side" id="app-sidebar">
         <div class="layui-side-scroll">
             <div class="layui-logo" style="cursor: pointer">
-                <img data-th-src="@{febs/images/logo.png}">
-                <span>FEBS 权限系统</span>
+                <!--                <img data-th-src="@{febs/images/logo.png}">-->
+                <span>智能制造系统</span>
             </div>
             <script
                     type="text/html"
@@ -82,15 +84,19 @@
                         let left = index == 0 ? 50 : 50 + index * 20;
                         let title = child.title;
                         if (child.icon) {
-                            title = '<i class="layui-icon '+child.icon+'"></i>' + child.title
+                        title = '<i class="layui-icon '+child.icon+'"></i>' + child.title
                         }
                         html += '
                         <dd><a style="padding-left:' + left + 'px" target="'+(child.target||'')+'"
                                lay-href="'+ (child.href||'') +'">' + title + '</a>';
                             if(child.childs) html += __createSlidebar(child.childs,index+1);
-                            html += '</dd>';
+                            html += '
+                        </dd>
+                        ';
                         });
-                        html = html +'</dl>';
+                        html = html +'
+                    </dl>
+                    ';
                     return html;
                     }
                     layui.each(d.childs, function(i,child){

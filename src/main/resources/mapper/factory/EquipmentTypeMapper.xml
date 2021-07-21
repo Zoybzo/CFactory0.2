@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.factory.mapper.EquipmentTypeMapper">
+
+    <resultMap id="equipmentTypeMap" type="cc.mrbird.febs.factory.entity.EquipmentType">
+        <result column="EQUIPMENT_Type_ID" jdbcType="BIGINT" property="equipmentTypeId"/>
+        <result column="EQUIPMENT_TYPE_NAME" jdbcType="VARCHAR" property="equipmentTypeName"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="CREATE_TIME" jdbcType="TIME" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIME" property="modifyTime"/>
+    </resultMap>
+
+    <sql id="findEquipmentTypeDetailSql">
+        SELECT et.EQUIPMENT_TYPE_ID equipmentTypeId,
+        et.EQUIPMENT_TYPE_NAME equipmentTypeName,
+        et.DESCRIPTION,
+        et.CREATE_TIME createTime,
+        et.MODIFY_TIME modifyTime
+        FROM t_equipment_type et
+        WHERE 1 = 1
+        <if test="equipmentType.equipmentTypeId != null and equipmentType.equipmentTypeId != ''">
+            AND et.EQUIPMENT_TYPE_ID =#{equipmentType.equipmentTypeId}
+        </if>
+        <if test="equipmentType.equipmentTypeName != null and equipmentType.equipmentTypeName != ''">
+            AND et.EQUIPMENT_TYPE_NAME = #{equipmentType.equipmentTypeName}
+        </if>
+        <if test="equipmentType.description != null and equipmentType.description != ''">
+            AND et.DESCRIPTION = #{equipmentType.description}
+        </if>
+        <if test="equipmentType.createTimeFrom != null and equipmentType.createTimeFrom !=''">
+            And et.create_time &gt; #{equipmentType.createTimeFrom}
+        </if>
+        <if test="equipmentType.createTimeTo!= null and equipmentType.createTimeTo !=''">
+            And et.create_time &lt; #{equipmentType.createTimeTo}
+        </if>
+    </sql>
+
+    <sql id="countEquipmentTypeDetailSql">
+        SELECT COUNT(1)
+        FROM t_equipment_type et
+        WHERE 1 = 1
+        <if test="equipmentType.equipmentTypeId != null and equipmentType.equipmentTypeId != ''">
+            AND et.EQUIPMENT_TYPE_ID =#{equipmentType.equipmentTypeId}
+        </if>
+        <if test="equipmentType.equipmentTypeName != null and equipmentType.equipmentTypeName != ''">
+            AND et.EQUIPMENT_TYPE_NAME = #{equipmentType.equipmentTypeName}
+        </if>
+        <if test="equipmentType.description != null and equipmentType.description != ''">
+            AND et.DESCRIPTION = #{equipmentType.description}
+        </if>
+        <if test="equipmentType.createTimeFrom != null and equipmentType.createTimeFrom !=''">
+            And et.create_time &gt; #{equipmentType.createTimeFrom}
+        </if>
+        <if test="equipmentType.createTimeTo!= null and equipmentType.createTimeTo !=''">
+            And et.create_time &lt; #{equipmentType.createTimeTo}
+        </if>
+    </sql>
+
+    <select id="countEquipmentTypeDetail" parameterType="equipmentType" resultType="long">
+        <include refid="countEquipmentTypeDetailSql"/>
+    </select>
+    <select id="findEquipmentTypeDetail" parameterType="equipmentType" resultType="equipmentType">
+        <include refid="findEquipmentTypeDetailSql"/>
+    </select>
+    <select id="findEquipmentTypeDetailPage" parameterType="equipmentType" resultType="equipmentType">
+        <include refid="findEquipmentTypeDetailSql"/>
+    </select>
+
+
+</mapper>

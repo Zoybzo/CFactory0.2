@@ -31,7 +31,7 @@ public interface IMenuService extends IService<Menu> {
      * 查找所有的菜单/按钮 （树形结构）
      *
      * @param menu menu
-     * @return MenuTree<Menu>
+     * @return MenuTree
      */
     MenuTree<Menu> findMenus(Menu menu);
 
@@ -39,7 +39,7 @@ public interface IMenuService extends IService<Menu> {
      * 查找所有的菜单/按钮
      *
      * @param menu menu
-     * @return MenuTree<Menu>
+     * @return MenuTree
      */
     List<Menu> findMenuList(Menu menu);
 

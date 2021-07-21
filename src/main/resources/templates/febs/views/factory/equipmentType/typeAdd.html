@@ -1,0 +1,53 @@
+<style>
+    #equipmentType-add {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="equipmentType-add">
+    <form class="layui-form" action="" lay-filter="equipmentType-add-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">类型名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="equipmentTypeName" minlength="2" maxlength="10"
+                       lay-verify="range|equipmentTypeName"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">类型描述：</label>
+            <div class="layui-input-block">
+                <input type="text" name="description" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="equipmentType-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            validate = layui.validate,
+            dataPermissionXmlSelect,
+            roleXmSelect,
+            deptXmlSelect;
+
+        form.verify(validate);
+        form.render();
+
+        form.on('submit(equipmentType-add-form-submit)', function (data) {
+            febs.post(ctx + 'equipmentType/equipmentTypeAdd', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增工厂成功');
+                $('#febs-equipmentType').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

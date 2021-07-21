@@ -18,11 +18,13 @@ public @interface Desensitization {
 
     /**
      * 脱敏规则类型
+     * @return DesensitizationType
      */
     DesensitizationType type();
 
     /**
      * 附加值, 自定义正则表达式等
+     * @return Strings
      */
     String[] attach() default Strings.EMPTY;
 }

@@ -1,0 +1,93 @@
+<style>
+    #equipment-add {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="equipment-add">
+    <form class="layui-form" action="" lay-filter="equipment-add-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">设备名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="equipmentName" minlength="2" maxlength="10" lay-verify="range|equipmentName"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">设备类型：</label>
+            <div class="layui-input-block width_250 pos-r">
+                <select name="equipmentTypeId" id="equipmentTypeInEquipmentAdd-menu" lay-verify="required">
+                    <option value="">--全部--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">所属工厂：</label>
+            <div class="layui-input-block width_250 pos-r">
+                <select name="ownedFactory" id="ownedFactoryInEquipmentAdd-menu" lay-verify="required">
+                    <option value="">--全部--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">设备描述：</label>
+            <div class="layui-input-block">
+                <textarea name="description" maxlength="100" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="equipment-add-form-submit" id="submit"></button>
+            <button type="reset" class="layui-btn" id="reset"></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            validate = layui.validate,
+            dataPermissionXmlSelect,
+            roleXmSelect,
+            deptXmlSelect;
+
+        form.verify(validate);
+        form.render();
+
+        $.ajax({
+            url: ctx + 'equipmentType/getAllEquipmentType',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data, function (index, item) {
+                    $('#equipmentTypeInEquipmentAdd-menu').append(new Option(item.equipmentTypeName, item.equipmentTypeId));//往下拉菜单里添加元素
+                })
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        $.ajax({
+            url: ctx + 'factory/getAllMyFactory',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data, function (index, item) {
+                    $('#ownedFactoryInEquipmentAdd-menu').append(new Option(item.factoryName, item.factoryId));//往下拉菜单里添加元素
+                })
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        form.on('submit(equipment-add-form-submit)', function (data) {
+            febs.post(ctx + 'equipment/equipmentAdd', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('新增设备成功');
+                $('#febs-equipment').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

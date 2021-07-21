@@ -22,7 +22,7 @@ public interface ILogService extends IService<SystemLog> {
      *
      * @param systemLog 日志
      * @param request   QueryRequest
-     * @return IPage<SystemLog>
+     * @return IPage
      */
     IPage<SystemLog> findLogs(SystemLog systemLog, QueryRequest request);
 

@@ -1,0 +1,115 @@
+<style>
+    #orderEquipment-update {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="orderEquipment-update">
+    <form class="layui-form" action="" lay-filter="orderEquipment-update-form">
+        <div id="last">
+
+            <div class="layui-form-item febs-hide">
+                <label class="layui-form-label febs-form-item-require">订单id：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="orderId" data-th-value="${order.orderId}">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label layui-form-label-sm">设备1：</label>
+                <div class="layui-input-inline" id="equipmentId1">
+                    <select name="equipmentId1" id="equipmentInOrderEquipmentUpdate-menu1">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label layui-form-label-sm">设备2：</label>
+                <div class="layui-input-inline" id="equipmentId2">
+                    <select name="equipmentId2" id="equipmentInOrderEquipmentUpdate-menu2">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label layui-form-label-sm">设备3：</label>
+                <div class="layui-input-inline" id="equipmentId3">
+                    <select name="equipmentId3" id="equipmentInOrderEquipmentUpdate-menu3">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="orderEquipment-update-form-submit" id="submit"></button>
+        </div>
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'xmSelect', 'validate'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            order = [[${order}]],
+            orderEquipment = [[${orderEquipment}]],
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render();
+
+        $.ajax({
+            url: ctx + 'equipment/getAllMyEquipment' + '/' + order.selectedFactoryId,
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data.rows, function (index, item) {
+                    $('#equipmentInOrderEquipmentUpdate-menu1').append(new Option(item.equipmentName, item.equipmentId));//往下拉菜单里添加元素
+                })
+                if (orderEquipment != null)
+                    $('#equipmentInOrderEquipmentUpdate-menu1').val(orderEquipment.equipmentId1 ? orderEquipment.equipmentId1 : "0");
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        $.ajax({
+            url: ctx + 'equipment/getAllMyEquipment' + '/' + order.selectedFactoryId,
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data.rows, function (index, item) {
+                    $('#equipmentInOrderEquipmentUpdate-menu2').append(new Option(item.equipmentName, item.equipmentId));//往下拉菜单里添加元素
+                })
+                if (orderEquipment != null)
+                    $('#equipmentInOrderEquipmentUpdate-menu2').val(orderEquipment.equipmentId2 ? orderEquipment.equipmentId2 : "0");
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        $.ajax({
+            url: ctx + 'equipment/getAllMyEquipment' + '/' + order.selectedFactoryId,
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data.rows, function (index, item) {
+                    $('#equipmentInOrderEquipmentUpdate-menu3').append(new Option(item.equipmentName, item.equipmentId));//往下拉菜单里添加元素
+                })
+                if (orderEquipment != null)
+                    $('#equipmentInOrderEquipmentUpdate-menu3').val(orderEquipment.equipmentId3 ? orderEquipment.equipmentId3 : "0");
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        form.on('submit(orderEquipment-update-form-submit)', function (data) {
+            febs.post(ctx + 'orderEquipment/update', data.field, function () {
+                layer.closeAll();
+                febs.alert.success(' 订单数据修改成功');
+                $('#febs-order').find('#query').click();
+            });
+            return false;
+        });
+    })
+    ;
+</script>

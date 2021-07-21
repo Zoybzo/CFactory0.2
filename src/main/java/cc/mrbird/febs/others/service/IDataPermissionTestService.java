@@ -15,7 +15,7 @@ public interface IDataPermissionTestService extends IService<DataPermissionTest>
      *
      * @param request            QueryRequest
      * @param dataPermissionTest dataPermissionTest
-     * @return IPage<DataPermissionTest>
+     * @return IPage
      */
     IPage<DataPermissionTest> findDataPermissionTests(QueryRequest request, DataPermissionTest dataPermissionTest);
 }

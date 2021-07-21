@@ -13,15 +13,15 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">手机：</label>
+            <label class="layui-form-label febs-form-item-require">手机：</label>
             <div class="layui-input-block">
-                <input type="tel" name="receiverMobile" lay-verify="phone" autocomplete="off" class="layui-input">
+                <input type="tel" name="receiverPhone" lay-verify="phone" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">地址：</label>
+            <label class="layui-form-label febs-form-item-require">地址：</label>
             <div class="layui-input-block">
-                <textarea name="description" maxlength="100" class="layui-textarea"></textarea>
+                <input name="receiverAddress" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item febs-hide">
@@ -45,13 +45,6 @@
 
         form.verify(validate);
         form.render();
-
-        febs.get(ctx + 'role', null, function (data) {
-            roleXmSelect.update({
-                data: data.data,
-                autoRow: true,
-            })
-        });
 
         form.on('submit(receiver-add-form-submit)', function (data) {
             febs.post(ctx + 'receiver/add', data.field, function () {

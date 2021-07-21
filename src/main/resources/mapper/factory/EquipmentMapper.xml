@@ -18,6 +18,7 @@
         COUNT(1)
         FROM
         t_equipment e
+        LEFT JOIN t_equipment_type et ON (et.EQUIPMENT_TYPE_ID=e.EQUIPMENT_TYPE_ID)
         WHERE 1 = 1
         <if test="equipment.equipmentId != null and equipment.equipmentId != ''">
             AND e.EQUIPMENT_ID = #{equipment.equipmentId}
@@ -27,6 +28,9 @@
         </if>
         <if test="equipment.status != null and equipment.status != ''">
             AND e.STATUS = #{equipment.status}
+        </if>
+        <if test="equipment.usingFactory != null and equipment.usingFactory != ''">
+            AND e.USING_FACTORY = #{equipment.usingFactory}
         </if>
         <if test="equipment.createTimeFrom != null and equipment.createTimeFrom !=''">
             And e.create_time &gt; #{equipment.createTimeFrom}
@@ -44,9 +48,41 @@
         e.USING_FACTORY usingFactory,
         e.description,
         e.CREATE_TIME createTime,
-        e.MODIFY_TIME modifyTime
+        e.MODIFY_TIME modifyTime,
+        et.EQUIPMENT_TYPE_NAME equipmentTypeName,
+        e.EQUIPMENT_TYPE_ID equipmentTypeId,
+        f1.FACTORY_NAME ownedFactoryName,
+        f2.FACTORY_NAME usingFactoryName,
+        uf1.USER_ID ownedUserId,
+        uf2.USER_ID usingUserId
         FROM t_equipment e
+        LEFT JOIN t_equipment_type et ON (et.EQUIPMENT_TYPE_ID=e.EQUIPMENT_TYPE_ID)
+        LEFT JOIN t_factory f1 ON (f1.FACTORY_ID = e.OWNED_FACTORY)
+        LEFT JOIN t_factory f2 ON (f2.FACTORY_ID = e.USING_FACTORY)
+        LEFT JOIN t_user_factory uf1 ON (uf1.FACTORY_ID = e.OWNED_FACTORY)
+        LEFT JOIN t_user_factory uf2 ON (uf2.FACTORY_ID = e.USING_FACTORY)
         WHERE 1=1
+        <if test="equipment.equipmentTypeId != null and equipment.equipmentTypeId != ''">
+            AND e.EQUIPMENT_TYPE_ID = #{equipment.equipmentTypeId}
+        </if>
+        <if test="equipment.usingFactory != null and equipment.usingFactory != ''">
+            AND e.USING_FACTORY = #{equipment.usingFactory}
+        </if>
+        <if test="equipment.ownedUserId != null and equipment.ownedUserId != ''">
+            AND uf1.USER_ID = #{equipment.ownedUserId}
+        </if>
+        <if test="equipment.usingUserId != null and equipment.usingUserId != ''">
+            AND uf2.USER_ID = #{equipment.usingUserId}
+        </if>
+        <if test="equipment.ownedFactoryName != null and equipment.ownedFactoryName != ''">
+            AND f1.FACTORY_NAME = #{equipment.ownedFactoryName}
+        </if>
+        <if test="equipment.usingFactoryName != null and equipment.usingFactoryName != ''">
+            AND f2.FACTORY_NAME = #{equipment.usingFactoryName}
+        </if>
+        <if test="equipment.equipmentTypeName != null and equipment.equipmentTypeName != ''">
+            AND et.EQUIPMENT_TYPE_NAME = #{equipment.equipmentTypeName}
+        </if>
         <if test="equipment.equipmentId != null and equipment.equipmentId != ''">
             AND e.EQUIPMENT_ID = #{equipment.equipmentId}
         </if>

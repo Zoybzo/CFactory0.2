@@ -1,0 +1,24 @@
+<div class="layui-fluid layui-anim febs-anim" id="febs-error-equipmentCannotBeReturn"
+     lay-title="equipmentCannotBeReturn">
+    <div class="layui-row layui-col-space10" style="margin-top:100px">
+        <div class="layui-col-xs3 layui-col-xs-offset2">
+            <img data-th-src="@{febs/images/error/403.svg}" alt="" width="85%"/>
+        </div>
+        <div class="layui-col-xs7">
+            <h1 style="font-size: 60px">403</h1>
+            <h2 class="febs-mar-b20 febs-c-gray">抱歉，该设备无法被归还</h2>
+            <button class="layui-btn layui-btn-normal" id="home">返回首页</button>
+        </div>
+    </div>
+</div>
+<script data-th-inline="javascript" type="text/javascript">
+    layui.use(['jquery', 'febs'], function () {
+        let $ = layui.jquery,
+            febs = layui.febs,
+            $view = $('#febs-error-equipmentCannotBeReturn');
+        $view.find('button#home').on('click', function () {
+            febs.view.tab.del(ctx + '403');
+            febs.view.tab.change(ctx + "index");
+        })
+    });
+</script>

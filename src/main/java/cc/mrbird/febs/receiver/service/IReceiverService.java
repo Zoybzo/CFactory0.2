@@ -18,9 +18,9 @@ public interface IReceiverService extends IService<Receiver> {
     /**
      * 查询（分页）
      *
-     * @param request QueryRequest
+     * @param request  QueryRequest
      * @param receiver receiver
-     * @return IPage<Receiver>
+     * @return IPage
      */
     IPage<Receiver> findReceivers(QueryRequest request, Receiver receiver);
 
@@ -28,7 +28,7 @@ public interface IReceiverService extends IService<Receiver> {
      * 查询（所有）
      *
      * @param receiver receiver
-     * @return List<Receiver>
+     * @return List
      */
     List<Receiver> findReceivers(Receiver receiver);
 
@@ -52,4 +52,11 @@ public interface IReceiverService extends IService<Receiver> {
      * @param receiver receiver
      */
     void deleteReceiver(Receiver receiver);
+
+    /**
+     * 删除
+     *
+     * @param receiverIds receiverIds
+     */
+    void deleteReceivers(String[] receiverIds);
 }

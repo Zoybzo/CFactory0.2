@@ -7,9 +7,7 @@ import cc.mrbird.febs.receiver.service.IReceiverService;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * @author Zoybzo
@@ -29,11 +27,11 @@ public class ViewController extends BaseController {
     @GetMapping(FebsConstant.VIEW_PREFIX + "receiver/add")
     @RequiresPermissions("receiver:view")
     public String receiverAddIndex() {
-        return FebsUtil.view("receiver/add");
+        return FebsUtil.view("receiver/receiverAdd");
     }
 
-    @GetMapping(FebsConstant.VIEW_PREFIX + "receiver/update/{receiverName}");
-
+    @GetMapping(FebsConstant.VIEW_PREFIX + "receiver/update/{receiverName}")
+    @RequiresPermissions("receiver:view")
     public String receiverUpdate() {
         return FebsUtil.view("receiver/update");
     }

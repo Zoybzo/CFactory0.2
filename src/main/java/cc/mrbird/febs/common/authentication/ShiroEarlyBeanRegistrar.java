@@ -56,6 +56,11 @@ public class ShiroEarlyBeanRegistrar {
         filterChainDefinitionMap.put(shiro.getLogoutUrl(), "logout");
         // 除上以外所有 url都必须认证通过才可以访问，未通过认证自动访问 LoginUrl
         filterChainDefinitionMap.put(FebsConstant.REQUEST_ALL, "user");
+        //swagger2免拦截
+        filterChainDefinitionMap.put("/swagger-ui.html**", "anon");
+        filterChainDefinitionMap.put("/v2/api-docs", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/**", "anon");
+        filterChainDefinitionMap.put("/webjars/**", "anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }

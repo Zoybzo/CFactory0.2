@@ -32,7 +32,7 @@ public interface IDeptService extends IService<Dept> {
      *
      * @param dept    部门对象（传递查询参数）
      * @param request QueryRequest
-     * @return List<Dept>
+     * @return List
      */
     List<Dept> findDept(Dept dept, QueryRequest request);
 

@@ -47,7 +47,9 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">所需产品</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="product" autocomplete="off" class="layui-input">
+                                            <select name="productId" id="productIdInOrder-menu" lay-verify="required">
+                                                <option value=""></option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="layui-inline">
@@ -59,8 +61,10 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">中标工厂</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="selectedFactory" autocomplete="off"
-                                                   class="layui-input">
+                                            <select name="selectedFactoryId" id="factoryIdInOrder-menu"
+                                                    lay-verify="required">
+                                                <option value=""></option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -90,10 +94,10 @@
 <script type="text/html" id="order-status">
     {{#
     let status = {
-    5: {title:'已完成', color: '#fdfffc'}
-    4: {title:'已签收', color: '#2ec4b6'}
-    3: {title:'已发货', color: '#a6e1fa'}
-    2: {title:'已选标', color: '#011627'}
+    5: {title:'已完成', color: '#fdfffc'},
+    4: {title:'已签收', color: '#2ec4b6'},
+    3: {title:'已发货', color: '#a6e1fa'},
+    2: {title:'已选标', color: '#011627'},
     1: {title: '选标中', color: '#ff9f1c'},
     0: {title: '编辑中', color: '#e71d36'}
     }[d.status];
@@ -104,8 +108,6 @@
     <span shiro:lacksPermission="order:view,order:update,order:delete">
         <span class="layui-badge-dot febs-bg-orange"></span> 无权限
     </span>
-    <a lay-event="detail" shiro:hasPermission="order:view"><i
-            class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>
     <a lay-event="edit" shiro:hasPermission="order:update"><i
             class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
     <a lay-event="del" shiro:hasPermission="order:delete"><i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
@@ -123,7 +125,6 @@
             $reset = $view.find('#reset'),
             $searchForm = $view.find('form'),
             sortObject = {field: 'createTime', type: null},
-            // currentOrder = [[${order}]],
             tableIns,
             createTimeFrom,
             createTimeTo,
@@ -141,8 +142,30 @@
 
         laydate.render({
             elem: '#order-deliveryTime',
-            range: true,
+            type: 'datetime',
             trigger: 'click'
+        });
+
+        $.ajax({
+            url: ctx + 'product/getAllProduct',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data, function (index, item) {
+                    $('#productIdInOrder-menu').append(new Option(item.productName, item.productId));//往下拉菜单里添加元素
+                })
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        $.ajax({
+            url: ctx + 'factory/getAllFactory',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data, function (index, item) {
+                    $('#factoryIdInOrder-menu').append(new Option(item.factoryName, item.factoryId));//往下拉菜单里添加元素
+                })
+                form.render('select'); //更新全部表单内容
+            }
         });
 
         dropdown.render({
@@ -257,13 +280,13 @@
                 cols: [[
                     {type: 'checkbox'},
                     {field: 'orderId', title: '订单编号', minWidth: 50},
-                    {field: 'username', title: '用户名', minWidth: 100},
+                    {field: 'username', title: '所属用户名', minWidth: 100},
                     {title: '状态', templet: '#order-status'},
-                    {field: 'productName', title: '产品名称', minWidth: 165},
+                    {field: 'productName', title: '所需产品名称', minWidth: 165},
                     {field: 'quantity', title: '所需数量', minWidth: 165},
                     {field: 'createTime', title: '创建时间', minWidth: 180, sort: true},
-                    {field: 'deliveryTime', title: '最晚发货时间', minWidth: 180},
-                    {field: 'factoryName', title: '中标工厂', minWidth: 180},
+                    {field: 'deliveryDatetime', title: '要求最晚发货时间', minWidth: 180},
+                    {field: 'selectedFactoryName', title: '中标工厂', minWidth: 180},
                     {title: '操作', toolbar: '#order-option', minWidth: 140}
                 ]]
             });
@@ -284,13 +307,6 @@
         }
 
         function deleteOrders(orderIds) {
-            // let currentOrderId = currentOrder.orderId + '';
-
-            // TODO: 订单已发布，无法删除
-            // if (('' + userIds).split(',').indexOf(currentUserId) !== -1) {
-            //     febs.alert.warn('所选用户包含当前登录用户，无法删除');
-            //     return;
-            // }
             febs.get(ctx + 'order/delete/' + orderIds, null, function () {
                 febs.alert.success('删除订单成功');
                 $query.click();

@@ -25,12 +25,14 @@ public interface IUserFactoryService extends IService<UserFactory> {
      */
     String findByFactoryId(String factoryId);
 
+    UserFactory findUserFactoryByFactoryId(String factoryId);
+
     /**
      * 查询（分页）
      *
      * @param request QueryRequest
      * @param userFactory userFactory
-     * @return IPage<UserFactory>
+     * @return IPage
      */
     IPage<UserFactory> findUserFactorys(QueryRequest request, UserFactory userFactory);
 
@@ -38,7 +40,7 @@ public interface IUserFactoryService extends IService<UserFactory> {
      * 查询（所有）
      *
      * @param userFactory userFactory
-     * @return List<UserFactory>
+     * @return List
      */
     List<UserFactory> findUserFactorys(UserFactory userFactory);
 

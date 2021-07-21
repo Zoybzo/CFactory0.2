@@ -20,7 +20,7 @@ public interface IProductService extends IService<Product> {
      *
      * @param request QueryRequest
      * @param product product
-     * @return IPage<Product>
+     * @return IPage
      */
     IPage<Product> findProducts(QueryRequest request, Product product);
 
@@ -28,7 +28,7 @@ public interface IProductService extends IService<Product> {
      * 查询（所有）
      *
      * @param product product
-     * @return List<Product>
+     * @return List
      */
     List<Product> findProducts(Product product);
 
@@ -52,4 +52,12 @@ public interface IProductService extends IService<Product> {
      * @param product product
      */
     void deleteProduct(Product product);
+
+    /**
+     * @param productId productId
+     * @return Product
+     */
+    Product findById(String productId);
+
+    Product findByName(String productName);
 }

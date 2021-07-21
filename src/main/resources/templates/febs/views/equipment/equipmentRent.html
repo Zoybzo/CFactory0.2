@@ -1,0 +1,63 @@
+<style>
+    #equipment-rent {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="equipment-rent">
+    <form class="layui-form" action="" lay-filter="equipment-rent-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">设备id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="equipmentId" data-th-value="${equipment.equipmentId}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label febs-form-item-require">使用工厂：</label>
+            <div class="layui-input-block width_250 pos-r">
+                <select name="usingFactory" id="usingFactoryInEquipmentRent-menu" lay-verify="required">
+                    <option value="">--全部--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <button class="layui-btn" lay-submit="" lay-filter="equipment-rent-form-submit" id="submit"></button>
+        </div>
+    </form>
+</div>
+
+<script data-th-inline="javascript">
+    layui.use(['febs', 'form', 'xmSelect', 'validate'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            xmSelect = layui.xmSelect,
+            equipment = [[${equipment}]],
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render();
+
+        $.ajax({
+            url: ctx + 'factory/getAllMyFactory',
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.data, function (index, item) {
+                    $('#usingFactoryInEquipmentRent-menu').append(new Option(item.factoryName, item.factoryId));//往下拉菜单里添加元素
+                })
+                form.render('select'); //更新全部表单内容
+            }
+        });
+
+        form.on('submit(equipment-rent-form-submit)', function (data) {
+            febs.post(ctx + 'equipment/rent', data.field, function () {
+                layer.closeAll();
+                febs.alert.success(equipment.equipmentName + ' 设备租用成功');
+                $('#febs-rent').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

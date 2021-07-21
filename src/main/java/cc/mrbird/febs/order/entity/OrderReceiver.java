@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 /**
  * 订单收货人表 Entity
  *
@@ -15,7 +17,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @Data
 @TableName("t_order_receiver")
-public class OrderReceiver {
+public class OrderReceiver implements Serializable, Cloneable {
 
     /**
      * 订单ID

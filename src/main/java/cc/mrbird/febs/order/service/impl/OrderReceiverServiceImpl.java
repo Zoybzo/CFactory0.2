@@ -1,6 +1,7 @@
 package cc.mrbird.febs.order.service.impl;
 
 import cc.mrbird.febs.common.entity.QueryRequest;
+import cc.mrbird.febs.order.entity.Order;
 import cc.mrbird.febs.order.entity.OrderReceiver;
 import cc.mrbird.febs.order.mapper.OrderReceiverMapper;
 import cc.mrbird.febs.order.service.IOrderReceiverService;
@@ -39,9 +40,9 @@ public class OrderReceiverServiceImpl extends ServiceImpl<OrderReceiverMapper, O
 
     @Override
     public List<OrderReceiver> findOrderReceivers(OrderReceiver orderReceiver) {
-	    LambdaQueryWrapper<OrderReceiver> queryWrapper = new LambdaQueryWrapper<>();
-		// TODO 设置查询条件
-		return this.baseMapper.selectList(queryWrapper);
+        LambdaQueryWrapper<OrderReceiver> queryWrapper = new LambdaQueryWrapper<>();
+        // TODO 设置查询条件
+        return this.baseMapper.selectList(queryWrapper);
     }
 
     @Override
@@ -60,7 +61,18 @@ public class OrderReceiverServiceImpl extends ServiceImpl<OrderReceiverMapper, O
     @Transactional(rollbackFor = Exception.class)
     public void deleteOrderReceiver(OrderReceiver orderReceiver) {
         LambdaQueryWrapper<OrderReceiver> wrapper = new LambdaQueryWrapper<>();
-	    // TODO 设置删除条件
-	    this.remove(wrapper);
-	}
+        // TODO 设置删除条件
+        this.remove(wrapper);
+    }
+
+    @Override
+    public boolean isReceiversExist(String[] receiverIds) {
+        for (String it : receiverIds) {
+            OrderReceiver orderReceiver = new OrderReceiver();
+            orderReceiver.setReceiverId(Long.valueOf(it));
+            long cnt = orderReceiverMapper.countOrderReceiverDetail(orderReceiver);
+            if (cnt != 0L) return true;
+        }
+        return false;
+    }
 }

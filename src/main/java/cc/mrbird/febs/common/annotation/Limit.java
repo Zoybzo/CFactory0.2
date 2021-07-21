@@ -18,31 +18,43 @@ public @interface Limit {
 
     /**
      * 资源名称，用于描述接口功能
+     *
+     * @return String
      */
     String name() default Strings.EMPTY;
 
     /**
      * 资源 key
+     *
+     * @return String
      */
     String key() default Strings.EMPTY;
 
     /**
      * key prefix
+     *
+     * @return String
      */
     String prefix() default Strings.EMPTY;
 
     /**
      * 时间范围，单位秒
+     *
+     * @return int
      */
     int period();
 
     /**
      * 限制访问次数
+     *
+     * @return int
      */
     int count();
 
     /**
      * 限制类型
+     *
+     * @return Type
      */
     LimitType limitType() default LimitType.CUSTOMER;
 }

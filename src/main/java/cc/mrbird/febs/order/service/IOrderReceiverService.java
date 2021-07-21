@@ -18,9 +18,9 @@ public interface IOrderReceiverService extends IService<OrderReceiver> {
     /**
      * 查询（分页）
      *
-     * @param request QueryRequest
+     * @param request       QueryRequest
      * @param orderReceiver orderReceiver
-     * @return IPage<OrderReceiver>
+     * @return IPage
      */
     IPage<OrderReceiver> findOrderReceivers(QueryRequest request, OrderReceiver orderReceiver);
 
@@ -28,7 +28,7 @@ public interface IOrderReceiverService extends IService<OrderReceiver> {
      * 查询（所有）
      *
      * @param orderReceiver orderReceiver
-     * @return List<OrderReceiver>
+     * @return List
      */
     List<OrderReceiver> findOrderReceivers(OrderReceiver orderReceiver);
 
@@ -52,4 +52,12 @@ public interface IOrderReceiverService extends IService<OrderReceiver> {
      * @param orderReceiver orderReceiver
      */
     void deleteOrderReceiver(OrderReceiver orderReceiver);
+
+    /**
+     * 检查是否存在订单使用该联系方式
+     *
+     * @param receiverIds receiverIds
+     * @return isReceiversExist
+     */
+    boolean isReceiversExist(String[] receiverIds);
 }

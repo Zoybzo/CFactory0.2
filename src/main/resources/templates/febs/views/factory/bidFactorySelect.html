@@ -1,0 +1,47 @@
+<style>
+    #bidFactory-select {
+        padding: 20px 25px 25px 0;
+    }
+</style>
+<div class="layui-fluid" id="bidFactory-select">
+    <form class="layui-form" action="" lay-filter="bidFactory-select">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">竞标id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="bidFactoryId" data-th-value="${bidFactory.bidFactoryId}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            是否确定选择该竞标？
+        </div>
+
+        <div class="layui-form-item febs-hide">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="bidFactory-select" id="submit"></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['febs', 'form', 'validate', 'xmSelect'], function () {
+        let $ = layui.$,
+            febs = layui.febs,
+            layer = layui.layer,
+            form = layui.form,
+            validate = layui.validate;
+
+        form.verify(validate);
+        form.render()
+
+        form.on('submit(bidFactory-select)', function (data) {
+            febs.post(ctx + 'bidFactory/select', data.field, function () {
+                layer.closeAll();
+                febs.alert.success('选标完成');
+                $('#febs-order').find('#query').click();
+            });
+            return false;
+        });
+    });
+</script>

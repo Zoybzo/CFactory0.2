@@ -83,7 +83,7 @@
     <span class="layui-badge febs-bg-{{status.color}}">{{ status.title }}</span>
 </script>
 <script type="text/html" id="factory-option">
-    <span shiro:lacksPermission="factory:view,factory:update,factory.delete">
+    <span shiro:lacksPermission="factory:view,factory:update,factory:delete">
         <span class="layui-badge-dot febs-bg-orange"></span> 无权限
     </span>
     <a lay-event="detail" shiro:hasPermission="factory:view"><i
@@ -256,10 +256,6 @@
         }
 
         function deleteFactories(factoryIds) {
-            let currentUserId = currentUser.userId + '';
-
-            //TODO:工厂含有未完成的订单，无法删除
-
             febs.get(ctx + 'factory/delete/' + factoryIds, null, function () {
                 febs.alert.success('删除工厂成功');
                 $query.click();

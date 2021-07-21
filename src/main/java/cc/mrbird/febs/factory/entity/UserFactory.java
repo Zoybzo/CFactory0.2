@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 /**
  * 用户工厂表 Entity
  *
@@ -15,7 +17,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @Data
 @TableName("t_user_factory")
-public class UserFactory {
+public class UserFactory implements Serializable, Cloneable {
 
     /**
      * 工厂ID
@@ -28,5 +30,11 @@ public class UserFactory {
      */
     @TableField("USER_ID")
     private Long userId;
+
+    /**
+     * 用户ID
+     */
+    @TableId(value = "USER_FACTORY_ID", type = IdType.AUTO)
+    private Long userFactoryId;
 
 }

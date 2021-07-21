@@ -1,7 +1,9 @@
 package cc.mrbird.febs.product.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -16,7 +18,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @Data
 @TableName("t_product_type")
-public class ProductType {
+public class ProductType implements Serializable, Cloneable {
 
     /**
      * 创建时间
@@ -54,4 +56,13 @@ public class ProductType {
     @TableField("PRODUCT_TYPE_NAME")
     private String productTypeName;
 
+    @TableField(exist = false)
+    private String createTimeFrom;
+    @TableField(exist = false)
+    private String createTimeTo;
+
+    @Override
+    protected ProductType clone() throws CloneNotSupportedException {
+        return (ProductType) super.clone();
+    }
 }

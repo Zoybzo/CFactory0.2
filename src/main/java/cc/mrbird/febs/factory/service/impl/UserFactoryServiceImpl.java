@@ -42,6 +42,16 @@ public class UserFactoryServiceImpl extends ServiceImpl<UserFactoryMapper, UserF
     }
 
     @Override
+    public UserFactory findUserFactoryByFactoryId(String factoryId) {
+        List<UserFactory> userFactory = baseMapper.selectList(new QueryWrapper<UserFactory>().lambda()
+                .eq(UserFactory::getFactoryId, factoryId));
+        if (CollectionUtils.isNotEmpty(userFactory)) {
+            return userFactory.get(0);
+        }
+        return null;
+    }
+
+    @Override
     public IPage<UserFactory> findUserFactorys(QueryRequest request, UserFactory userFactory) {
         LambdaQueryWrapper<UserFactory> queryWrapper = new LambdaQueryWrapper<>();
         // TODO 设置查询条件
@@ -71,8 +81,6 @@ public class UserFactoryServiceImpl extends ServiceImpl<UserFactoryMapper, UserF
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteUserFactory(UserFactory userFactory) {
-        LambdaQueryWrapper<UserFactory> wrapper = new LambdaQueryWrapper<>();
-        // TODO 设置删除条件
-        this.remove(wrapper);
+        removeById(userFactory.getUserFactoryId());
     }
 }

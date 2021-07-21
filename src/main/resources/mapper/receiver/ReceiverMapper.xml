@@ -2,4 +2,80 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.receiver.mapper.ReceiverMapper">
 
+    <resultMap id="receiverMap" type="cc.mrbird.febs.receiver.entity.Receiver">
+        <result column="RECEIVER_ID" jdbcType="BIGINT" property="receiverId"/>
+        <result column="USER_ID" jdbcType="BIGINT" property="userId"/>
+        <result column="RECEIVER_NAME" jdbcType="VARCHAR" property="receiverName"/>
+        <result column="RECEIVER_ADDRESS" jdbcType="VARCHAR" property="receiverAddress"/>
+        <result column="CREATE_TIME" jdbcType="TIME" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIME" property="modifyTime"/>
+        <result column="TAG" jdbcType="VARCHAR" property="tag"/>
+    </resultMap>
+
+    <sql id="findReceiverDetailSql">
+        SELECT
+        r.RECEIVER_ID receiverId,
+        r.USER_ID userId,
+        r.RECEIVER_NAME receiverName,
+        r.RECEIVER_PHONE receiverPhone,
+        r.CREATE_TIME createTime,
+        r.TAG,
+        r.RECEIVER_ADDRESS receiverAddress
+        FROM t_receiver r
+        WHERE 1 = 1
+        <if test="receiver.receiverId != null and receiver.receiverId != ''">
+            AND r.RECEIVER_ID = #{receiver.receiverId}
+        </if>
+        <if test="receiver.userId != null and receiver.userId != ''">
+            AND r.USER_ID = #{receiver.userId}
+        </if>
+        <if test="receiver.receiverName != null and receiver.receiverName != ''">
+            AND r.RECEIVER_NAME = #{receiver.receiverName}
+        </if>
+        <if test="receiver.receiverAddress != null and receiver.receiverAddress != ''">
+            AND r.RECEIVER_ADDRESS = #{receiver.receiverAddress}
+        </if>
+        <if test="receiver.createTimeFrom != null and receiver.createTimeFrom !=''">
+            And r.create_time &gt; #{receiver.createTimeFrom}
+        </if>
+        <if test="receiver.createTimeTo!= null and receiver.createTimeTo !=''">
+            And r.create_time &lt; #{receiver.createTimeTo}
+        </if>
+    </sql>
+
+    <sql id="countReceiverDetailSql">
+        SELECT COUNT(1)
+        FROM t_receiver r
+        WHERE 1=1
+        <if test="receiver.receiverId != null and receiver.receiverId != ''">
+            AND r.RECEIVER_ID = #{receiver.receiverId}
+        </if>
+        <if test="receiver.userId != null and receiver.userId != ''">
+            AND r.USER_ID = #{receiver.userId}
+        </if>
+        <if test="receiver.receiverName != null and receiver.receiverName != ''">
+            AND r.RECEIVER_NAME = #{receiver.receiverName}
+        </if>
+        <if test="receiver.receiverAddress != null and receiver.receiverAddress != ''">
+            AND r.RECEIVER_ADDRESS = #{receiver.receiverAddress}
+        </if>
+        <if test="receiver.createTimeFrom != null and receiver.createTimeFrom !=''">
+            And r.create_time &gt; #{receiver.createTimeFrom}
+        </if>
+        <if test="receiver.createTimeTo!= null and receiver.createTimeTo !=''">
+            And r.create_time &lt; #{receiver.createTimeTo}
+        </if>
+    </sql>
+
+    <select id="countReceiverDetail" parameterType="receiver" resultType="long">
+        <include refid="countReceiverDetailSql"/>
+    </select>
+
+    <select id="findReceiverDetail" parameterType="receiver" resultType="receiver">
+        <include refid="findReceiverDetailSql"/>
+    </select>
+
+    <select id="findReceiverDetailPage" parameterType="receiver" resultType="receiver">
+        <include refid="findReceiverDetailSql"/>
+    </select>
 </mapper>

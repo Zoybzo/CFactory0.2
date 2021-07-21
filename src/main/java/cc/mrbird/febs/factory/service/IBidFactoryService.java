@@ -1,6 +1,6 @@
-package cc.mrbird.febs.receiver.service;
+package cc.mrbird.febs.factory.service;
 
-import cc.mrbird.febs.receiver.entity.BidFactory;
+import cc.mrbird.febs.factory.entity.BidFactory;
 
 import cc.mrbird.febs.common.entity.QueryRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -20,7 +20,7 @@ public interface IBidFactoryService extends IService<BidFactory> {
      *
      * @param request QueryRequest
      * @param bidFactory bidFactory
-     * @return IPage<BidFactory>
+     * @return IPage
      */
     IPage<BidFactory> findBidFactorys(QueryRequest request, BidFactory bidFactory);
 
@@ -28,7 +28,7 @@ public interface IBidFactoryService extends IService<BidFactory> {
      * 查询（所有）
      *
      * @param bidFactory bidFactory
-     * @return List<BidFactory>
+     * @return List
      */
     List<BidFactory> findBidFactorys(BidFactory bidFactory);
 
@@ -52,4 +52,6 @@ public interface IBidFactoryService extends IService<BidFactory> {
      * @param bidFactory bidFactory
      */
     void deleteBidFactory(BidFactory bidFactory);
+
+    BidFactory findById(String bidFactoryId);
 }

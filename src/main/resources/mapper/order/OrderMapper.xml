@@ -42,23 +42,46 @@
         </if>
     </sql>
 
+    <sql id="countOrderDetailWithStatusSql">
+        SELECT
+        COUNT(1)
+        FROM
+        t_order o
+        WHERE 1 = 1
+        <if test="order.status != null and order.status != ''">
+            AND o.STATUS != #{order.status}
+        </if>
+        <if test="order.selectedFactoryId != null and order.selectedFactoryId != ''">
+            AND o.SELECTED_FACTORY_ID = #{order.selectedFactoryId}
+        </if>
+    </sql>
+
     <sql id="findOrderDetailSql">
         SELECT
         o.ORDER_ID orderId,
         o.USER_ID userId,
         o.status,
         p.PRODUCT_NAME productName,
-        o.DELIVERY_DATETIME deliveryTime,
-        f.FACTORY_NAME factoryName
+        o.DELIVERY_DATETIME deliveryDatetime,
+        p.CREATE_TIME createTime,
+        f1.FACTORY_NAME selectedFactoryName,
+        f1.FACTORY_ID selectedFactoryId,
+        u.USERNAME username,
+        p.PRODUCT_NAME productName,
+        o.QUANTITY quantity
         FROM
         t_order o
         LEFT JOIN t_product p on o.PRODUCT_ID = p.PRODUCT_ID
         LEFT JOIN t_user u on o.USER_ID = u.USER_ID
-        LEFT JOIN t_factory f on o.SELECTED_FACTORY_ID = f.FACTORY_ID
+        LEFT JOIN t_factory f1 on o.SELECTED_FACTORY_ID = f1.FACTORY_ID
         WHERE 1 = 1
         <if test="order.userId != null and order.userId != ''">
             AND o.USER_ID = #{order.userId}
         </if>
+        <if test="order.username != null and order.username != ''">
+            AND u.USERNAME = #{order.username}
+        </if>
+
         <if test="order.status != null and order.status != ''">
             AND o.STATUS = #{order.status}
         </if>
@@ -79,6 +102,87 @@
         </if>
     </sql>
 
+    <sql id="countOtherOrderDetailSql">
+        SELECT
+        COUNT(1)
+        FROM
+        t_order o
+        WHERE 1 = 1
+        <if test="order.userId != null and order.userId != ''">
+            AND o.USER_ID != #{order.userId}
+        </if>
+    </sql>
+
+    <sql id="findOtherOrderDetailSql">
+        SELECT
+        o.ORDER_ID orderId,
+        o.USER_ID userId,
+        o.status,
+        p.PRODUCT_NAME productName,
+        o.DELIVERY_DATETIME deliveryDatetime,
+        p.CREATE_TIME createTime,
+        f1.FACTORY_NAME selectedFactoryName,
+        f1.FACTORY_ID selectedFactoryId,
+        u.USERNAME username,
+        p.PRODUCT_NAME productName,
+        o.QUANTITY quantity
+        FROM
+        t_order o
+        LEFT JOIN t_product p on o.PRODUCT_ID = p.PRODUCT_ID
+        LEFT JOIN t_user u on o.USER_ID = u.USER_ID
+        LEFT JOIN t_factory f1 on o.SELECTED_FACTORY_ID = f1.FACTORY_ID
+        WHERE 1 = 1
+        <if test="order.userId != null and order.userId != ''">
+            AND o.USER_ID != #{order.userId}
+        </if>
+    </sql>
+
+    <sql id="countMyOrderDetailSql">
+        SELECT
+        COUNT(1)
+        FROM
+        t_order o
+        LEFT JOIN t_user_factory uf on o.SELECTED_FACTORY_ID = uf.FACTORY_ID
+        WHERE 1 = 1
+        <if test="order.selectedUserId != null and order.selectedUserId != ''">
+            AND uf.USER_ID = #{order.selectedUserId}
+        </if>
+        <if test="order.status != null and order.status != ''">
+            AND o.STATUS = #{order.status}
+        </if>
+    </sql>
+
+    <sql id="findMyOrderDetailSql">
+        SELECT
+        o.ORDER_ID orderId,
+        o.USER_ID userId,
+        o.status,
+        p.PRODUCT_NAME productName,
+        o.DELIVERY_DATETIME deliveryDatetime,
+        p.CREATE_TIME createTime,
+        f.FACTORY_NAME selectedFactoryName,
+        uf.FACTORY_ID selectedFactoryId,
+        uf.USER_ID selectedFactoryId,
+        u.USERNAME username,
+        p.PRODUCT_NAME productName,
+        o.QUANTITY quantity
+        FROM
+        t_order o
+        LEFT JOIN t_product p on o.PRODUCT_ID = p.PRODUCT_ID
+        LEFT JOIN t_user u on o.USER_ID = u.USER_ID
+        LEFT JOIN t_user_factory uf on o.SELECTED_FACTORY_ID = uf.FACTORY_ID
+        LEFT JOIN t_factory f ON f.FACTORY_ID = o.SELECTED_FACTORY_ID
+        LEFT JOIN t_user u1 ON u1.USER_ID =uf.USER_ID
+        WHERE 1 = 1
+        <if test="order.selectedUserId != null and order.selectedUserId != ''">
+            AND uf.USER_ID = #{order.selectedUserId}
+        </if>
+        <if test="order.status != null and order.status != ''">
+            AND o.STATUS = #{order.status}
+        </if>
+    </sql>
+
+
     <select id="countOrderDetail" parameterType="order" resultType="long">
         <include refid="countOrderDetailSql"/>
     </select>
@@ -89,6 +193,34 @@
 
     <select id="findOrderDetail" parameterType="order" resultType="order">
         <include refid="findOrderDetailSql"/>
+    </select>
+
+    <select id="countOrderDetailWithStatus" parameterType="order" resultType="long">
+        <include refid="countOrderDetailWithStatusSql"/>
+    </select>
+
+    <select id="countOtherOrderDetail" parameterType="order" resultType="long">
+        <include refid="countOtherOrderDetailSql"/>
+    </select>
+
+    <select id="findOtherOrderDetailPage" parameterType="order" resultType="order">
+        <include refid="findOtherOrderDetailSql"/>
+    </select>
+
+    <select id="findOtherOrderDetail" parameterType="order" resultType="order">
+        <include refid="findOtherOrderDetailSql"/>
+    </select>
+
+    <select id="countMyOrderDetail" parameterType="order" resultType="long">
+        <include refid="countMyOrderDetailSql"/>
+    </select>
+
+    <select id="findMyOrderDetailPage" parameterType="order" resultType="order">
+        <include refid="findMyOrderDetailSql"/>
+    </select>
+
+    <select id="findMyOrderDetail" parameterType="order" resultType="order">
+        <include refid="findMyOrderDetailSql"/>
     </select>
 
 </mapper>

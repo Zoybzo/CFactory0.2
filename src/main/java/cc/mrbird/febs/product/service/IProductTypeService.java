@@ -18,9 +18,9 @@ public interface IProductTypeService extends IService<ProductType> {
     /**
      * 查询（分页）
      *
-     * @param request QueryRequest
+     * @param request     QueryRequest
      * @param productType productType
-     * @return IPage<ProductType>
+     * @return IPage
      */
     IPage<ProductType> findProductTypes(QueryRequest request, ProductType productType);
 
@@ -28,7 +28,7 @@ public interface IProductTypeService extends IService<ProductType> {
      * 查询（所有）
      *
      * @param productType productType
-     * @return List<ProductType>
+     * @return List
      */
     List<ProductType> findProductTypes(ProductType productType);
 
@@ -52,4 +52,14 @@ public interface IProductTypeService extends IService<ProductType> {
      * @param productType productType
      */
     void deleteProductType(ProductType productType);
+
+    /**
+     * 通过类型名查找
+     *
+     * @param productTypeName 产品类型名
+     * @return 产品类型
+     */
+    ProductType findByName(String productTypeName);
+
+    ProductType findById(String productTypeId);
 }

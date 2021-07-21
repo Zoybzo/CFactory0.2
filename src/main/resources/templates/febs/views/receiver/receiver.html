@@ -21,28 +21,29 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">姓名</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="receiverName" autocomplete="off"
+                                            <input type="text" name="receiverName"
                                                    class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">电话</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="receiverMobile" autocomplete="off"
+                                            <input type="text" name="receiverPhone"
                                                    class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">地址</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="receiverAddress" autocomplete="off"
+                                            <input type="text" name="receiverAddress"
                                                    class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">创建时间</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="time" id="receiver-createTime" class="layui-input">
+                                            <input type="text" name="time" id="receiver-createTime"
+                                                   class="layui-input">
                                         </div>
                                     </div>
                                 </div>
@@ -78,7 +79,8 @@
             class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>
     <a lay-event="edit" shiro:hasPermission="receiver:update"><i
             class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
-    <a lay-event="del" shiro:hasPermission="receiver:delete"><i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
+    <a lay-event="del" shiro:hasPermission="receiver:delete"><i
+            class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
 </script>
 <script data-th-inline="none" type="text/javascript">
     layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs', 'xmSelect'], function () {
@@ -113,7 +115,7 @@
             click: function (name, elem, event) {
                 let checkStatus = table.checkStatus('receiverTable');
                 if (name === 'add') {
-                    febs.modal.open('新增联系方式', ctx + 'receiver/addIndex', {
+                    febs.modal.open('新增联系方式', ctx + 'receiver/add', {
                         btn: ['提交', '重置'],
                         area: $(window).width() <= 750 ? '95%' : '50%',
                         yes: function (index, layero) {
@@ -164,7 +166,7 @@
             let data = obj.data,
                 layEvent = obj.event;
             if (layEvent === 'del') {
-                febs.modal.confirm('删除联系方式', '确定删除该l联系方式？', function () {
+                febs.modal.confirm('删除联系方式', '确定删除该联系方式？', function () {
                     deleteReceivers(data.receiverId);
                 });
             }
@@ -195,7 +197,9 @@
 
         $query.on('click', function () {
             let params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
-            tableIns.reload({where: params, page: {curr: 1}});
+            if (params)
+                tableIns.reload({where: params, page: {curr: 1}});
+            else initTable();
         });
 
         $reset.on('click', function () {
@@ -214,16 +218,16 @@
                 url: ctx + 'receiver/list',
                 cols: [[
                     {type: 'checkbox'},
-                    {field: 'receiverName', title: '联系人姓名', minWidth: 100},
-                    {field: 'mobile', title: '手机', minWidth: 165},
-                    {field: 'email', title: '邮箱', minWidth: 180},
+                    {field: 'receiverName', title: '姓名', minWidth: 100},
+                    {field: 'receiverPhone', title: '手机', minWidth: 165},
+                    {field: 'receiverAddress', title: '地址', minWidth: 180},
                     {field: 'createTime', title: '创建时间', minWidth: 180, sort: true},
                     {title: '操作', toolbar: '#receiver-option', minWidth: 140}
                 ]]
             });
         }
 
-        function getQueryParams(flag) {
+        function getQueryParams() {
             let params = $searchForm.serializeJson();
             let createTime = params.time;
             if (createTime) {

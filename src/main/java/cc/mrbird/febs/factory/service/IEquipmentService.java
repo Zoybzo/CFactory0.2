@@ -18,9 +18,9 @@ public interface IEquipmentService extends IService<Equipment> {
     /**
      * 查询（分页）
      *
-     * @param request QueryRequest
+     * @param request   QueryRequest
      * @param equipment equipment
-     * @return IPage<Equipment>
+     * @return IPage
      */
     IPage<Equipment> findEquipments(QueryRequest request, Equipment equipment);
 
@@ -28,7 +28,7 @@ public interface IEquipmentService extends IService<Equipment> {
      * 查询（所有）
      *
      * @param equipment equipment
-     * @return List<Equipment>
+     * @return List
      */
     List<Equipment> findEquipments(Equipment equipment);
 
@@ -52,4 +52,12 @@ public interface IEquipmentService extends IService<Equipment> {
      * @param equipment equipment
      */
     void deleteEquipment(Equipment equipment);
+
+    Equipment findById(String equipmentId);
+
+    boolean doesEquipmentUsing(String[] equipmentIds);
+
+    void rentEquipment(Equipment equipment);
+
+    boolean doesEquipmentRent(String[] equipmentIds);
 }

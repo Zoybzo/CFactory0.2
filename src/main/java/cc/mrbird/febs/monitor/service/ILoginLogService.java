@@ -19,7 +19,7 @@ public interface ILoginLogService extends IService<LoginLog> {
      *
      * @param loginLog 传参
      * @param request  request
-     * @return IPage<LoginLog>
+     * @return IPage
      */
     IPage<LoginLog> findLoginLogs(LoginLog loginLog, QueryRequest request);
 

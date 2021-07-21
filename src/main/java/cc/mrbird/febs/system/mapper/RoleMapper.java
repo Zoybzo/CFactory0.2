@@ -27,7 +27,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      *
      * @param page 分页
      * @param role 角色
-     * @return IPage<User>
+     * @return IPage
      */
     <T> IPage<Role> findRolePage(Page<T> page, @Param("role") Role role);
 }
